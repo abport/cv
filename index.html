@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resume Builder</title>
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="css/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto&family=Montserrat:wght@400;600&family=Open+Sans:wght@400;600&family=Raleway:wght@400;600&family=Lato&display=swap"
+        rel="stylesheet" />
+    <!-- Quill.js CSS -->
+    <link href="css/quill.snow.css" rel="stylesheet" />
+    <link href="css/styles.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="container-fluid">
+        <h1 class="text-center resume_builder_header_title">Free Online Resume Builder</h1>
+        <h2 class="text-center small">Create a Professional Resume in Minutes</h2>
+
+        <div class="row">
+            <div class="d-flex justify-content-between align-items-center mb-4 live-preview-header">
+                <h6 class="mb-0 btn btn-secondary btn-sm small">Control Panel</h6>
+            </div>
+            <div class="col-md-4 control-panel">
+                <div class="accordion" id="resumeAccordion">
+                    <!-- Contact Information Section -->
+                    <div class="accordion-item" role="region" aria-labelledby="headingContact">
+                        <h2 class="accordion-header" id="headingContact" role="heading" aria-level="2">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseContact" aria-expanded="true" aria-controls="collapseContact">
+                                <i class="bi bi-person-lines-fill me-2"></i> Contact Information
+                            </button>
+                        </h2>
+                        <div id="collapseContact" class="accordion-collapse collapse show" role="region"
+                            aria-labelledby="headingContact" data-bs-parent="#resumeAccordion">
+                            <div class="accordion-body" role="group">
+                                <div class="floating-label-container">
+                                    <input type="text" class="form-control" id="contactName" placeholder="John Doe"
+                                        required />
+                                    <label for="contactName" class="form-label">Full Name</label>
+                                </div>
+                                <div class="floating-label-container">
+                                    <input type="text" class="form-control" id="contactTitle"
+                                        placeholder="Web Developer" required />
+                                    <label for="contactTitle" class="form-label">Professional Title</label>
+                                </div>
+
+                                <!-- Contact Items Container -->
+                                <div id="contactItemsContainer">
+                                    <!-- Default Contact Items -->
+                                    <div class="contact-item mb-3" role="group">
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input class="form-check-input include-contact-item" type="checkbox"
+                                                    value="email" id="includeEmail" checked />
+                                                <label class="form-check-label" for="includeEmail">
+                                                    <i class="bi bi-envelope-fill" aria-hidden="true"></i>
+                                                </label>
+                                            </div>
+                                            <div class="floating-label-container floating-email">
+                                                <input type="email" class="form-control contact-input" id="contactEmail"
+                                                    required placeholder="john@example.com" />
+                                                <label for="contactEmail">john@example.com</label>
+                                            </div>
+                                            <div
+                                                class="floating-label-container floating-email-link floating-label-link">
+                                                <input type="text" class="form-control contact-link" id="linkEmail"
+                                                    placeholder="Optional Link" />
+                                                <label for="linkEmail">mailto:email (Optional)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="contact-item mb-3" role="group">
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input class="form-check-input include-contact-item" type="checkbox"
+                                                    value="phone" id="includePhone" checked />
+                                                <label class="form-check-label" for="includePhone">
+                                                    <i class="bi bi-telephone-fill" aria-hidden="true"></i>
+                                                </label>
+                                            </div>
+                                            <div class="floating-label-container floating-phone">
+                                                <input type="tel" class="form-control contact-input" id="contactPhone"
+                                                    required placeholder="+1 234 567 890" />
+                                                <label for="contactPhone">+1 234 567 890</label>
+                                            </div>
+                                            <div
+                                                class="floating-label-container floating-phone-link floating-label-link">
+                                                <input type="text" class="form-control contact-link" id="linkPhone"
+                                                    placeholder="Optional Link" />
+                                                <label for="linkPhone">Link (Optional)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="contact-item mb-3" role="group">
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input class="form-check-input include-contact-item" type="checkbox"
+                                                    value="linkedin" id="includeLinkedIn" checked />
+                                                <label class="form-check-label" for="includeLinkedIn">
+                                                    <i class="bi bi-linkedin" aria-hidden="true"></i>
+                                                </label>
+                                            </div>
+                                            <div class="floating-label-container floating-linkedin">
+                                                <input type="text" class="form-control contact-input"
+                                                    id="contactLinkedIn" required placeholder="your-linkedin-profile" />
+                                                <label for="contactLinkedIn">your-linkedin-profile</label>
+                                            </div>
+                                            <div
+                                                class="floating-label-container floating-linkedin-link floating-label-link">
+                                                <input type="text" class="form-control contact-link" id="linkLinkedIn"
+                                                    placeholder="Optional Link" />
+                                                <label for="linkLinkedIn">Link (Optional)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="contact-item mb-3" role="group">
+                                        <div class="form-group">
+                                            <div class="form-check">
+                                                <input class="form-check-input include-contact-item" type="checkbox"
+                                                    value="website" id="includeWebsite" checked />
+                                                <label class="form-check-label" for="includeWebsite">
+                                                    <i class="bi bi-globe" aria-hidden="true"></i>
+                                                </label>
+                                            </div>
+                                            <div class="floating-label-container floating-website">
+                                                <input type="text" class="form-control contact-input"
+                                                    id="contactWebsite" required
+                                                    placeholder="https://your-website.com" />
+                                                <label for="contactWebsite">https://your-website.com</label>
+                                            </div>
+                                            <div
+                                                class="floating-label-container floating-website-link floating-label-link">
+                                                <input type="text" class="form-control contact-link" id="linkWebsite"
+                                                    placeholder="Optional Link" />
+                                                <label for="linkWebsite">Link (Optional)</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-secondary btn-sm mb-3" id="addContactItem">
+                                    Add Contact Item
+                                </button>
+
+                                <div class="mb-3">
+                                    <label for="contactAlignment" class="form-label">Contact Information
+                                        Alignment</label>
+                                    <select class="form-select" id="contactAlignment">
+                                        <option value="left" selected>Left</option>
+                                        <option value="right">Right</option>
+                                        <option value="center">Center</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="nameAlignment" class="form-label">Name Alignment</label>
+                                    <select class="form-select" id="nameAlignment">
+                                        <option value="left" selected>Left</option>
+                                        <option value="center">Center</option>
+                                        <option value="right">Right</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="titleAlignment" class="form-label">Title Alignment</label>
+                                    <select class="form-select" id="titleAlignment">
+                                        <option value="left" selected>Left</option>
+                                        <option value="center">Center</option>
+                                        <option value="right">Right</option>
+                                    </select>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="contactInfoDisplay" class="form-label">Contact Info Display</label>
+                                    <select class="form-select" id="contactInfoDisplay">
+                                        <option value="stacked" selected>Stacked</option>
+                                        <option value="inline">Inline</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="accordion-body" role="group">
+                                <div class="mb-3">
+                                    <label for="contactLineHeight" class="form-label">Line Height</label>
+                                    <input type="range" class="form-range" min="1" max="3" step="0.1"
+                                        id="contactLineHeight" value="1.6" />
+                                    <span id="contactLineHeightValue">1.6</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Photo Section -->
+                    <div class="accordion-item" role="region" aria-labelledby="headingPhoto">
+                        <h2 class="accordion-header" id="headingPhoto" role="heading" aria-level="2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapsePhoto" aria-expanded="false" aria-controls="collapsePhoto">
+                                <i class="bi bi-image me-2"></i> Photo
+                            </button>
+                        </h2>
+                        <div id="collapsePhoto" class="accordion-collapse collapse" role="region"
+                            aria-labelledby="headingPhoto" data-bs-parent="#resumeAccordion">
+                            <div class="accordion-body" role="group">
+                                <div class="mb-3">
+                                    <label for="photoUpload" class="form-label">Upload Photo</label>
+                                    <input class="form-control" type="file" id="photoUpload" accept="image/*" />
+                                </div>
+                                <div class="mb-3">
+                                    <label for="photoPosition" class="form-label">Photo Position in Header</label>
+                                    <select class="form-select" id="photoPosition">
+                                        <option value="left" selected>Far Left</option>
+                                        <option value="right">Far Right</option>
+                                        <option value="center">Center</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input toggle-section" type="checkbox" value="photo"
+                                        id="togglePhoto" checked />
+                                    <label class="form-check-label" for="togglePhoto">
+                                        Include Photo
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary Section -->
+                    <div class="accordion-item" role="region" aria-labelledby="headingSummary">
+                        <h2 class="accordion-header" id="headingSummary" role="heading" aria-level="2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseSummary" aria-expanded="false" aria-controls="collapseSummary">
+                                <i class="bi bi-file-earmark-text me-2"></i> Summary
+                            </button>
+                        </h2>
+                        <div id="collapseSummary" class="accordion-collapse collapse" role="region"
+                            aria-labelledby="headingSummary" data-bs-parent="#resumeAccordion">
+                            <div class="accordion-body" role="group">
+                                <div class="floating-label-container">
+                                    <input type="text" class="form-control" id="summaryTitle" placeholder="Summary"
+                                        value="Summary" required />
+                                    <label for="summaryTitle" class="form-label">Section Title</label>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="summaryText" class="form-label">Summary</label>
+                                    <!-- Quill.js Toolbar for Summary -->
+                                    <div id="summaryToolbar">
+                                        <select class="ql-font">
+                                            <option value="arial" selected>Arial</option>
+                                            <option value="calibri">Calibri</option>
+                                            <option value="georgia">Georgia</option>
+                                            <option value="tahoma">Tahoma</option>
+                                            <option value="times-new-roman">Times New Roman</option>
+                                            <option value="verdana">Verdana</option>
+                                            <option value="roboto">Roboto</option>
+                                            <option value="montserrat">Montserrat</option>
+                                            <option value="open-sans">Open Sans</option>
+                                            <option value="raleway">Raleway</option>
+                                            <option value="lato">Lato</option>
+                                        </select>
+                                        <select class="ql-size">
+                                            <option value="small"></option>
+                                            <option selected></option>
+                                            <option value="large"></option>
+                                            <option value="huge"></option>
+                                        </select>
+                                        <button class="ql-bold"></button>
+                                        <button class="ql-italic"></button>
+                                        <button class="ql-underline"></button>
+                                        <button class="ql-strike"></button>
+                                        <select class="ql-color"></select>
+                                        <select class="ql-background"></select>
+                                        <select class="ql-align">
+                                            <option selected></option>
+                                            <option value="center"></option>
+                                            <option value="right"></option>
+                                            <option value="justify"></option>
+                                        </select>
+                                        <button class="ql-list" value="ordered"></button>
+                                        <button class="ql-list" value="bullet"></button>
+                                        <button class="ql-indent" value="-1"></button>
+                                        <button class="ql-indent" value="+1"></button>
+                                        <button class="ql-blockquote"></button>
+                                        <button class="ql-code-block"></button>
+                                        <button class="ql-direction" value="rtl"></button>
+                                        <button class="ql-script" value="sub"></button>
+                                        <button class="ql-script" value="super"></button>
+                                        <select class="ql-header">
+                                            <option selected></option>
+                                            <option value="1">Heading 1</option>
+                                            <option value="2">Heading 2</option>
+                                            <option value="3">Heading 3</option>
+                                        </select>
+                                        <button class="ql-link"></button>
+                                        <button class="ql-image"></button>
+                                        <button class="ql-video"></button>
+                                        <button class="ql-formula"></button>
+                                        <button class="ql-clean"></button>
+                                    </div>
+                                    <!-- Quill.js Editor for Summary -->
+                                    <div id="summaryTextEditor"></div>
+                                    <!-- Hidden textarea for Summary (used for initial data) -->
+                                    <textarea class="form-control" id="summaryText" rows="4" style="display: none"
+                                        placeholder="A brief summary about yourself..."></textarea>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="summaryLineHeight" class="form-label">Line Height</label>
+                                    <input type="range" class="form-range" min="1" max="3" step="0.1"
+                                        id="summaryLineHeight" value="1.6" />
+                                    <span id="summaryLineHeightValue">1.6</span>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input toggle-section" type="checkbox" value="summary"
+                                        id="toggleSummary" checked />
+                                    <label class="form-check-label" for="toggleSummary">
+                                        Include Summary
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Education Section -->
+                    <div class="accordion-item" role="region" aria-labelledby="headingEducation">
+                        <h2 class="accordion-header" id="headingEducation" role="heading" aria-level="2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseEducation" aria-expanded="false"
+                                aria-controls="collapseEducation">
+                                <i class="bi bi-mortarboard-fill me-2"></i> Education
+                            </button>
+                        </h2>
+                        <div id="collapseEducation" class="accordion-collapse collapse" role="region"
+                            aria-labelledby="headingEducation" data-bs-parent="#resumeAccordion">
+                            <div class="accordion-body" role="group">
+                                <div class="floating-label-container">
+                                    <input type="text" class="form-control" id="educationTitle" placeholder="Education"
+                                        value="Education" required />
+                                    <label for="educationTitle" class="form-label">Section Title</label>
+                                </div>
+                                <div id="educationList">
+                                    <!-- Default Education Item -->
+                                    <div class="mb-3 education-item" role="group">
+                                        <div class="floating-label-container">
+                                            <input type="text" class="form-control degree" id="degree-0"
+                                                placeholder="Degree" required />
+                                            <label class="form-label">Degree</label>
+                                        </div>
+                                        <div class="floating-label-container">
+                                            <input type="text" class="form-control institution" id="institution-0"
+                                                placeholder="Institution Name" required />
+                                            <label class="form-label">Institution Name</label>
+                                        </div>
+
+                                        <div class="floating-label-container">
+                                            <input type="text" class="form-control year" id="year-0"
+                                                placeholder="2015 - 2019" required />
+                                            <label class="form-label">Year (2015 - 2019)</label>
+                                        </div>
+                                        <!-- Radio buttons for Education Display Style -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Education Display Style</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="educationDisplay"
+                                                    id="educationStacked" value="stacked" checked>
+                                                <label class="form-check-label" for="educationStacked">
+                                                    Stacked
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="educationDisplay"
+                                                    id="educationInline" value="inline">
+                                                <label class="form-check-label" for="educationInline">
+                                                    Inline
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <button class="btn btn-danger btn-sm mt-2 remove-education">
+                                            Remove
+                                        </button>
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary btn-sm mb-3" id="addEducation">
+                                    Add Education
+                                </button>
+                                <div class="mb-3">
+                                    <label for="educationLineHeight" class="form-label">Line Height</label>
+                                    <input type="range" class="form-range" min="1" max="3" step="0.1"
+                                        id="educationLineHeight" value="1.6" />
+                                    <span id="educationLineHeightValue">1.6</span>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input toggle-section" type="checkbox" value="education"
+                                        id="toggleEducation" checked />
+                                    <label class="form-check-label" for="toggleEducation">
+                                        Include Education
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Experience Section -->
+                    <div class="accordion-item" role="region" aria-labelledby="headingExperience">
+                        <h2 class="accordion-header" id="headingExperience" role="heading" aria-level="2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseExperience" aria-expanded="false"
+                                aria-controls="collapseExperience">
+                                <i class="bi bi-briefcase-fill me-2"></i> Experience
+                            </button>
+                        </h2>
+                        <div id="collapseExperience" class="accordion-collapse collapse" role="region"
+                            aria-labelledby="headingExperience" data-bs-parent="#resumeAccordion">
+                            <div class="accordion-body" role="group">
+                                <div class="floating-label-container">
+                                    <input type="text" class="form-control" id="experienceTitle"
+                                        placeholder="Experience" value="Experience" required />
+                                    <label for="experienceTitle" class="form-label">Section Title</label>
+                                </div>
+                                <div id="experienceList">
+                                    <!-- Default Experience Item -->
+                                    <div class="mb-3 experience-item" role="group">
+                                        <div class="floating-label-container">
+                                            <input type="text" class="form-control job-title" id="job-title-0"
+                                                placeholder="Job Title" required />
+                                            <label class="form-label">Job Title</label>
+                                        </div>
+                                        <div class="floating-label-container">
+                                            <input type="text" class="form-control company" id="company-0"
+                                                placeholder="ABC Corp" required />
+                                            <label class="form-label">Company</label>
+                                        </div>
+
+                                        <div class="floating-label-container">
+                                            <input type="text" class="form-control duration" id="duration-0"
+                                                placeholder="Jan 2020 - Present" required />
+                                            <label class="form-label">Duration (Jan 2020 - Present)</label>
+                                        </div>
+
+                                        <!-- Experience Display Style Options -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Experience Display Style</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="experienceDisplay-0"
+                                                    id="experienceInline-0" value="inline" checked>
+                                                <label class="form-check-label" for="experienceInline-0">
+                                                    Inline
+                                                </label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="experienceDisplay-0"
+                                                    id="experienceStacked-0" value="stacked">
+                                                <label class="form-check-label" for="experienceStacked-0">
+                                                    Stacked
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <label class="form-label mt-2">Description</label>
+                                        <!-- Quill.js Toolbar for Experience Description -->
+                                        <div class="experience-description-toolbar">
+                                            <select class="ql-font">
+                                                <option value="arial" selected>Arial</option>
+                                                <option value="calibri">Calibri</option>
+                                                <option value="georgia">Georgia</option>
+                                                <option value="tahoma">Tahoma</option>
+                                                <option value="times-new-roman">
+                                                    Times New Roman
+                                                </option>
+                                                <option value="verdana">Verdana</option>
+                                                <option value="roboto">Roboto</option>
+                                                <option value="montserrat">Montserrat</option>
+                                                <option value="open-sans">Open Sans</option>
+                                                <option value="raleway">Raleway</option>
+                                                <option value="lato">Lato</option>
+                                            </select>
+                                            <select class="ql-size">
+                                                <option value="small"></option>
+                                                <option selected></option>
+                                                <option value="large"></option>
+                                                <option value="huge"></option>
+                                            </select>
+                                            <button class="ql-bold"></button>
+                                            <button class="ql-italic"></button>
+                                            <button class="ql-underline"></button>
+                                            <button class="ql-strike"></button>
+                                            <select class="ql-color"></select>
+                                            <select class="ql-background"></select>
+                                            <select class="ql-align">
+                                                <option selected></option>
+                                                <option value="center"></option>
+                                                <option value="right"></option>
+                                                <option value="justify"></option>
+                                            </select>
+                                            <button class="ql-list" value="ordered"></button>
+                                            <button class="ql-list" value="bullet"></button>
+                                            <button class="ql-indent" value="-1"></button>
+                                            <button class="ql-indent" value="+1"></button>
+                                            <button class="ql-blockquote"></button>
+                                            <button class="ql-code-block"></button>
+                                            <button class="ql-direction" value="rtl"></button>
+                                            <button class="ql-script" value="sub"></button>
+                                            <button class="ql-script" value="super"></button>
+                                            <select class="ql-header">
+                                                <option selected></option>
+                                                <option value="1">Heading 1</option>
+                                                <option value="2">Heading 2</option>
+                                                <option value="3">Heading 3</option>
+                                            </select>
+                                            <button class="ql-link"></button>
+                                            <button class="ql-image"></button>
+                                            <button class="ql-video"></button>
+                                            <button class="ql-formula"></button>
+                                            <button class="ql-clean"></button>
+                                        </div>
+                                        <!-- Quill.js Editor for Experience Description -->
+                                        <div class="experience-description-editor" id="experience-description-editor-0">
+                                        </div>
+                                        <!-- Hidden textarea for Experience Description (used for initial data) -->
+                                        <textarea class="form-control description" rows="3" style="display: none"
+                                            placeholder="Job responsibilities and achievements..."></textarea>
+                                        <button class="btn btn-danger btn-sm mt-2 remove-experience">
+                                            Remove
+                                        </button>
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary btn-sm mb-3" id="addExperience">
+                                    Add Experience
+                                </button>
+                                <div class="mb-3">
+                                    <label for="experienceLineHeight" class="form-label">Line Height</label>
+                                    <input type="range" class="form-range" min="1" max="3" step="0.1"
+                                        id="experienceLineHeight" value="1.6" />
+                                    <span id="experienceLineHeightValue">1.6</span>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input toggle-section" type="checkbox" value="experience"
+                                        id="toggleExperience" checked />
+                                    <label class="form-check-label" for="toggleExperience">
+                                        Include Experience
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skills Section -->
+                    <div class="accordion-item" role="region" aria-labelledby="headingSkills">
+                        <h2 class="accordion-header" id="headingSkills" role="heading" aria-level="2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseSkills" aria-expanded="false" aria-controls="collapseSkills">
+                                <i class="bi bi-tools me-2"></i> Skills
+                            </button>
+                        </h2>
+                        <div id="collapseSkills" class="accordion-collapse collapse" role="region"
+                            aria-labelledby="headingSkills" data-bs-parent="#resumeAccordion">
+                            <div class="accordion-body" role="group">
+                                <div class="floating-label-container">
+                                    <input type="text" class="form-control" id="skillsTitle" placeholder="Skills"
+                                        value="Skills" required />
+                                    <label for="skillsTitle" class="form-label">Section Title</label>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="skillsInput" class="form-label">Add Skills</label>
+                                    <input type="text" class="form-control" id="skillsInput"
+                                        placeholder="e.g., JavaScript, Python" />
+                                    <button class="btn btn-secondary btn-sm mt-2" id="addSkill">
+                                        Add Skill
+                                    </button>
+                                </div>
+                                <ul class="list-group mb-3" id="skillsList">
+                                    <!-- Skills will be added here -->
+                                </ul>
+                                <!-- Skills Display Style Options -->
+                                <div class="mb-3">
+                                    <label class="form-label">Skills Display Style</label>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="skillsDisplay"
+                                            id="skillsList" value="list" checked>
+                                        <label class="form-check-label" for="skillsList">Bulleted List</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="skillsDisplay"
+                                            id="skillsTable" value="table">
+                                        <label class="form-check-label" for="skillsTable">Table</label>
+                                    </div>
+                                </div>
+                                <!-- Table Column Count -->
+                                <div class="mb-3" id="tableColumnsContainer" style="display: none;">
+                                    <label for="tableColumnCount" class="form-label">Number of Columns:</label>
+                                    <input type="number" class="form-control" id="tableColumnCount" value="3" min="1">
+                                </div>
+
+                                <!-- Table Cell Spacing -->
+                                <div class="mb-3" id="tableCellSpacingContainer" style="display: none;">
+                                    <label for="tableCellSpacing" class="form-label">Cell Spacing (px):</label>
+                                    <input type="number" class="form-control" id="tableCellSpacing" value="5" min="0">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="skillsLineHeight" class="form-label">Line Height</label>
+                                    <input type="range" class="form-range" min="1" max="3" step="0.1"
+                                        id="skillsLineHeight" value="1.6" />
+                                    <span id="skillsLineHeightValue">1.6</span>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input toggle-section" type="checkbox" value="skills"
+                                        id="toggleSkills" checked />
+                                    <label class="form-check-label" for="toggleSkills">
+                                        Include Skills
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Projects Section -->
+                    <div class="accordion-item" role="region" aria-labelledby="headingProjects">
+                        <h2 class="accordion-header" id="headingProjects" role="heading" aria-level="2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseProjects" aria-expanded="false"
+                                aria-controls="collapseProjects">
+                                <i class="bi bi-diagram-3-fill me-2"></i> Projects
+                            </button>
+                        </h2>
+                        <div id="collapseProjects" class="accordion-collapse collapse" role="region"
+                            aria-labelledby="headingProjects" data-bs-parent="#resumeAccordion">
+                            <div class="accordion-body" role="group">
+                                <div class="floating-label-container">
+                                    <input type="text" class="form-control" id="projectsTitle" placeholder="Projects"
+                                        value="Projects" required />
+                                    <label for="projectsTitle" class="form-label">Section Title</label>
+                                </div>
+                                <div id="projectsList">
+                                    <!-- Default Project Item -->
+                                    <div class="mb-3 project-item" role="group">
+                                        <div class="floating-label-container">
+                                            <input type="text" class="form-control project-name" id="project-name-0"
+                                                placeholder="Project XYZ" required />
+                                            <label class="form-label">Project Name</label>
+                                        </div>
+                                        <label class="form-label mt-2">Description</label>
+                                        <!-- Quill.js Toolbar for Project Description -->
+                                        <div class="project-description-toolbar">
+                                            <select class="ql-font">
+                                                <option value="arial" selected>Arial</option>
+                                                <option value="calibri">Calibri</option>
+                                                <option value="georgia">Georgia</option>
+                                                <option value="tahoma">Tahoma</option>
+                                                <option value="times-new-roman">
+                                                    Times New Roman
+                                                </option>
+                                                <option value="verdana">Verdana</option>
+                                                <option value="roboto">Roboto</option>
+                                                <option value="montserrat">Montserrat</option>
+                                                <option value="open-sans">Open Sans</option>
+                                                <option value="raleway">Raleway</option>
+                                                <option value="lato">Lato</option>
+                                            </select>
+                                            <select class="ql-size">
+                                                <option value="small"></option>
+                                                <option selected></option>
+                                                <option value="large"></option>
+                                                <option value="huge"></option>
+                                            </select>
+                                            <button class="ql-bold"></button>
+                                            <button class="ql-italic"></button>
+                                            <button class="ql-underline"></button>
+                                            <button class="ql-strike"></button>
+                                            <select class="ql-color"></select>
+                                            <select class="ql-background"></select>
+                                            <select class="ql-align">
+                                                <option selected></option>
+                                                <option value="center"></option>
+                                                <option value="right"></option>
+                                                <option value="justify"></option>
+                                            </select>
+                                            <button class="ql-list" value="ordered"></button>
+                                            <button class="ql-list" value="bullet"></button>
+                                            <button class="ql-indent" value="-1"></button>
+                                            <button class="ql-indent" value="+1"></button>
+                                            <button class="ql-blockquote"></button>
+                                            <button class="ql-code-block"></button>
+                                            <button class="ql-direction" value="rtl"></button>
+                                            <button class="ql-script" value="sub"></button>
+                                            <button class="ql-script" value="super"></button>
+                                            <select class="ql-header">
+                                                <option selected></option>
+                                                <option value="1">Heading 1</option>
+                                                <option value="2">Heading 2</option>
+                                                <option value="3">Heading 3</option>
+                                            </select>
+                                            <button class="ql-link"></button>
+                                            <button class="ql-image"></button>
+                                            <button class="ql-video"></button>
+                                            <button class="ql-formula"></button>
+                                            <button class="ql-clean"></button>
+                                        </div>
+                                        <!-- Quill.js Editor for Project Description -->
+                                        <div class="project-description-editor" id="project-description-editor-0"></div>
+                                        <!-- Hidden textarea for Project Description (used for initial data) -->
+                                        <textarea class="form-control project-description" rows="2"
+                                            style="display: none" placeholder="Brief description..."></textarea>
+                                        <button class="btn btn-danger btn-sm mt-2 remove-project">
+                                            Remove
+                                        </button>
+                                    </div>
+                                </div>
+                                <button class="btn btn-secondary btn-sm mb-3" id="addProject">
+                                    Add Project
+                                </button>
+                                <div class="mb-3">
+                                    <label for="projectsLineHeight" class="form-label">Line Height</label>
+                                    <input type="range" class="form-range" min="1" max="3" step="0.1"
+                                        id="projectsLineHeight" value="1.6" />
+                                    <span id="projectsLineHeightValue">1.6</span>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input toggle-section" type="checkbox" value="projects"
+                                        id="toggleProjects" checked />
+                                    <label class="form-check-label" for="toggleProjects">
+                                        Include Projects
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add New Section  -->
+                    <div class="accordion-item" role="region" aria-labelledby="headingNewSection">
+                        <h2 class="accordion-header" id="headingNewSection" role="heading" aria-level="2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseNewSection" aria-expanded="false"
+                                aria-controls="collapseNewSection">
+                                <i class="bi bi-plus-circle-fill me-2"></i> Add New Section
+                            </button>
+                        </h2>
+                        <div id="collapseNewSection" class="accordion-collapse collapse" role="region"
+                            aria-labelledby="headingNewSection" data-bs-parent="#resumeAccordion">
+                            <div class="accordion-body" role="group">
+                                <div class="floating-label-container">
+                                    <input type="text" class="form-control" id="newSectionTitle"
+                                        placeholder="Section Title" required />
+                                    <label for="newSectionTitle" class="form-label">Section Title</label>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Content</label>
+                                    <!-- Quill.js Toolbar for New Section -->
+                                    <div id="newSectionToolbar">
+                                        <select class="ql-font">
+                                            <option value="arial" selected>Arial</option>
+                                            <option value="calibri">Calibri</option>
+                                            <option value="georgia">Georgia</option>
+                                            <option value="tahoma">Tahoma</option>
+                                            <option value="times-new-roman">Times New Roman</option>
+                                            <option value="verdana">Verdana</option>
+                                            <option value="roboto">Roboto</option>
+                                            <option value="montserrat">Montserrat</option>
+                                            <option value="open-sans">Open Sans</option>
+                                            <option value="raleway">Raleway</option>
+                                            <option value="lato">Lato</option>
+                                        </select>
+                                        <select class="ql-size">
+                                            <option value="small"></option>
+                                            <option selected></option>
+                                            <option value="large"></option>
+                                            <option value="huge"></option>
+                                        </select>
+                                        <button class="ql-bold"></button>
+                                        <button class="ql-italic"></button>
+                                        <button class="ql-underline"></button>
+                                        <button class="ql-strike"></button>
+                                        <select class="ql-color"></select>
+                                        <select class="ql-background"></select>
+                                        <select class="ql-align">
+                                            <option selected></option>
+                                            <option value="center"></option>
+                                            <option value="right"></option>
+                                            <option value="justify"></option>
+                                        </select>
+                                        <button class="ql-list" value="ordered"></button>
+                                        <button class="ql-list" value="bullet"></button>
+                                        <button class="ql-indent" value="-1"></button>
+                                        <button class="ql-indent" value="+1"></button>
+                                        <button class="ql-blockquote"></button>
+                                        <button class="ql-code-block"></button>
+                                        <button class="ql-direction" value="rtl"></button>
+                                        <button class="ql-script" value="sub"></button>
+                                        <button class="ql-script" value="super"></button>
+                                        <select class="ql-header">
+                                            <option selected></option>
+                                            <option value="1">Heading 1</option>
+                                            <option value="2">Heading 2</option>
+                                            <option value="3">Heading 3</option>
+                                        </select>
+                                        <button class="ql-link"></button>
+                                        <button class="ql-image"></button>
+                                        <button class="ql-video"></button>
+                                        <button class="ql-formula"></button>
+                                        <button class="ql-clean"></button>
+                                    </div>
+                                    <!-- Quill.js Editor for New Section -->
+                                    <div class="new-section-editor" id="new-section-editor"></div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="newSectionLineHeight" class="form-label">Line Height</label>
+                                    <input type="range" class="form-range" min="1" max="3" step="0.1"
+                                        id="newSectionLineHeight" value="1.6" />
+                                    <span id="newSectionLineHeightValue">1.6</span>
+                                </div>
+                                <button class="btn btn-secondary btn-sm mb-3" id="addNewSectionBtn">
+                                    Add Section to Resume
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add a new accordion item for spacing -->
+                    <div class="accordion-item" role="region" aria-labelledby="headingSpacing">
+                        <h2 class="accordion-header" id="headingSpacing" role="heading" aria-level="2">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseSpacing" aria-expanded="false" aria-controls="collapseSpacing">
+                                <i class="bi bi-arrows-expand me-2"></i> Section Spacing
+                            </button>
+                        </h2>
+                        <div id="collapseSpacing" class="accordion-collapse collapse" role="region"
+                            aria-labelledby="headingSpacing" data-bs-parent="#resumeAccordion">
+                            <div class="accordion-body" role="group">
+                                <div class="mb-3">
+                                    <label for="sectionSpacing" class="form-label">Spacing between sections
+                                        (px):</label>
+                                    <input type="number" class="form-control" id="sectionSpacing" value="20" min="0">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Live Preview -->
+            <div class="col-md-8">
+                <div class="d-flex justify-content-between align-items-center mb-4 live-preview-header">
+                    <h6 class="mb-0 btn btn-info btn-sm small">Live Preview</h6>
+                    <button class="btn btn-primary btn-sm" id="exportBtn">
+                        Export as HTML
+                    </button>
+                </div>
+                <div class="preview live-resume-preview" id="resumePreview">
+                    <!-- Photo and Header -->
+                    <div class="resume-header section" data-section="photo" id="section-photo">
+                        <div class="photo left" id="resumePhotoContainer" style="display: none">
+                            <img src="" alt="User Photo" id="resumePhoto" class="draggable-photo" />
+                        </div>
+                        <div class="contact-info stacked" id="resumeHeaderInfo">
+                            <h1 id="previewName">John Doe</h1>
+                            <h2 id="previewTitle">Web Developer</h2>
+                            <div id="previewContactInfo">
+                                <p id="previewemail">john@example.com</p>
+                                <p id="previewphone">+1 234 567 890</p>
+                                <p id="previewlinkedin">your-linkedin-profile</p>
+                                <p id="previewwebsite">https://your-website.com</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Summary Section Preview -->
+                    <div class="resume-section section" data-section="summary" id="section-summary">
+                        <h2 id="summarySectionTitle">Summary</h2>
+                        <div id="previewSummary">A brief summary about yourself...</div>
+                    </div>
+
+                    <!-- Education Section Preview -->
+                    <div class="resume-section section" data-section="education" id="section-education">
+                        <h2 id="educationSectionTitle">Education</h2>
+                        <ul id="previewEducation">
+                            <!-- Education items will be added here -->
+                        </ul>
+                    </div>
+
+                    <!-- Experience Section Preview -->
+                    <div class="resume-section section" data-section="experience" id="section-experience">
+                        <h2 id="experienceSectionTitle">Experience</h2>
+                        <div id="previewExperience">
+                            <!-- Experience items will be added here -->
+                        </div>
+                    </div>
+
+                    <!-- Skills Section Preview -->
+                    <div class="resume-section section" data-section="skills" id="section-skills">
+                        <h2 id="skillsSectionTitle">Skills</h2>
+                        <div id="previewSkills"> </div>
+                    </div>
+
+                    <!-- Projects Section Preview -->
+                    <div class="resume-section section" data-section="projects" id="section-projects">
+                        <h2 id="projectsSectionTitle">Projects</h2>
+                        <div id="previewProjects">
+                            <!-- Projects will be added here -->
+                        </div>
+                    </div>
+                    <!-- New Sections will be added here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Font Customization Modal -->
+        <div class="modal fade" id="fontModal" tabindex="-1" aria-labelledby="fontModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="fontModalLabel">
+                            Font Customization
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="font-controls">
+                            <label for="modalFontFamily" class="form-label">Font Family</label>
+                            <select class="form-select" id="modalFontFamily">
+                                <option value="Roboto" selected>Roboto</option>
+                                <option value="Open Sans">Open Sans</option>
+                                <option value="Lato">Lato</option>
+                                <option value="Montserrat">Montserrat</option>
+                                <option value="Calibri">Calibri</option>
+                                <option value="Helvetica">Helvetica</option>
+                                <option value="Georgia">Georgia</option>
+                                <option value="Courier New">Courier New</option>
+                                <option value="Verdana">Verdana</option>
+                                <option value="Times New Roman">Times New Roman</option>
+                                <option value="Arial">Arial</option>
+                                <option value="Impact">Impact</option>
+                                <option value="Comic Sans MS">Comic Sans MS</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                            <input type="text" class="form-control mt-2" id="modalCustomFont"
+                                placeholder="Enter font name" style="display: none" />
+                        </div>
+                        <div class="font-controls">
+                            <label for="modalFontSize" class="form-label">Font Size (px)</label>
+                            <input type="number" class="form-control" id="modalFontSize" value="16" min="10" max="36" />
+                        </div>
+                        <div class="font-controls">
+                            <label for="modalFontColor" class="form-label">Font Color</label>
+                            <input type="color" class="form-control form-control-color" id="modalFontColor"
+                                value="#000000" title="Choose your color" />
+                        </div>
+                        <!-- Title Border Color (Only shows for title sections) -->
+                        <div class="mb-3 mt-3" id="modalTitleBorderColorContainer" style="display: none">
+                            <label for="modalTitleBorderColor" class="form-label">Title Border Color</label>
+                            <input type="color" class="form-control form-control-color" id="modalTitleBorderColor"
+                                value="#007bff" title="Choose your color" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                            Close
+                        </button>
+                        <button type="button" class="btn btn-primary btn-sm" id="applyFontChangesBtn">
+                            Apply Changes
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Structured Data Markup for SEO -->
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          "name": "Free Online Resume Builder",
+          "description": "Build a stunning resume in minutes with our free online resume builder.",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Web",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          }
+        }
+    </script>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <!-- Sortable.js -->
+    <script src="js/Sortable.min.js"></script>
+    <!-- Quill.js -->
+    <script src="js/quill.js"></script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

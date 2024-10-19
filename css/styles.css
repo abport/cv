@@ -1,0 +1,578 @@
+/* 
+        CSS Styles for the Resume Builder App
+        ---------------------------------------
+        This section contains all the CSS styles used for the application. It includes:
+          - General styles for body, preview section, and control panel.
+          - Styles for sections, draggable elements, and highlighting.
+          - Modern resume styles for the header, contact information, and sections.
+          - Styles for floating labels, contact items, and Quill editor overrides.
+          - Styles for custom font families and sizes.
+          - Styles for the input group with edit buttons.
+          - Section colors for the control panel accordion items.
+        */
+
+body {
+    padding: 20px;
+    background-color: #f4f6f9;
+    font-family: "Roboto", sans-serif;
+    font-size: 0.9rem;
+}
+
+.preview {
+    border: 1px solid #e0e0e0;
+    padding: 30px;
+    min-height: 800px;
+    position: relative;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Styles for draggable sections */
+.section {
+    border: 1px dashed transparent;
+    padding: 15px;
+    margin-bottom: 15px;
+    cursor: move;
+    border-radius: 5px;
+    transition: border 0.3s, background-color 0.3s;
+}
+
+/* Hover effect for draggable sections */
+.section:hover {
+    border: 1px dashed #007bff;
+    background-color: #f9f9f9;
+}
+
+/* Styles for the draggable photo */
+.draggable-photo {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Styles for the control panel */
+.control-panel {
+    max-height: 100vh;
+    overflow-y: auto;
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #6c757d;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.control-panel::-webkit-scrollbar {
+    width: 8px;
+    /* Adjust scrollbar width */
+}
+
+.control-panel::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* Track background */
+    border-radius: 8px;
+    /* Maintain the rounded corners */
+    margin-top: 19px;
+    margin-bottom: 19px;
+}
+
+.control-panel::-webkit-scrollbar-thumb {
+    background: #888;
+    /* Thumb color */
+    border-radius: 8px;
+    /* Rounded thumb */
+}
+
+.control-panel::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    /* Darker thumb on hover */
+}
+
+
+/* Styles for font controls in the modal */
+.font-controls {
+    margin-top: 10px;
+}
+
+/* Highlight style for selected elements */
+.highlight {
+    border: 2px solid #007bff;
+    background-color: #e7f1ff;
+}
+
+/* Modern Resume Styles */
+
+/* Styles for the resume header */
+.resume-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+/* Margin for the photo in left and right aligned headers */
+.resume-header.left .photo,
+.resume-header.right .photo {
+    margin-right: 20px;
+}
+
+/* Style for right-aligned photo */
+.resume-header.right {
+    flex-direction: row-reverse;
+}
+
+.resume-header.right .photo {
+    margin-left: 20px;
+    margin-right: 0;
+}
+
+/* Style for center-aligned photo */
+.resume-header.center {
+    flex-direction: column;
+    align-items: center;
+}
+
+.resume-header.center .photo {
+    margin-bottom: 20px;
+    margin-right: 0;
+}
+
+/* Prevent the photo from shrinking */
+.resume-header .photo {
+    flex-shrink: 0;
+}
+
+/* Styles for contact information in the header */
+.resume-header .contact-info {
+    flex-grow: 1;
+    text-align: left;
+}
+
+.resume-header .contact-info h1 {
+    margin: 0;
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.resume-header .contact-info h2 {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: #555555;
+}
+
+.resume-header .contact-info p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #555555;
+}
+
+/* Style for inline contact info */
+.resume-header .contact-info.inline p {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+/* Styles for resume sections */
+.resume-section h2 {
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    color: #007bff;
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.resume-section ul,
+.resume-section ol {
+    padding-left: 20px;
+    font-size: 0.9rem;
+}
+
+.resume-section li {
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+/* Hide default textarea for Quill editor */
+
+
+/* Floating Label Styles */
+.floating-label-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+    /* Decreased margin */
+}
+
+/* The input field */
+.floating-label-container input,
+.floating-label-container textarea,
+.floating-label-container select {
+    width: 100%;
+    padding: 10px 12px;
+    /* Decreased padding */
+    font-size: 14px;
+    border: 1px solid #757575;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Remove input outline on focus */
+.floating-label-container input:focus,
+.floating-label-container textarea:focus,
+.floating-label-container select:focus {
+    outline: none;
+    border-color: #3f51b5;
+    /* Google Blue */
+    box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+    /* Subtle shadow */
+}
+
+/* The floating label */
+.floating-label-container label {
+    position: absolute;
+    top: 10px;
+    /* Adjusted top position */
+    left: 12px;
+    color: #757575;
+    pointer-events: none;
+    background-color: #fff;
+    padding: 0 4px;
+    transition: all 0.2s ease-out;
+    font-size: 14px;
+    /* Slightly smaller font size for the label */
+}
+
+/* When the input is focused or has content, move the label */
+.floating-label-container input:focus+label,
+.floating-label-container input:not(:placeholder-shown)+label,
+.floating-label-container textarea:focus+label,
+.floating-label-container textarea:not(:placeholder-shown)+label,
+.floating-label-container select:focus+label,
+.floating-label-container select:not(:placeholder-shown)+label {
+    top: -9px;
+    /* Adjusted top position */
+    left: 10px;
+    font-size: 10px;
+    color: #3f51b5;
+    /* Google Blue */
+    border-top: 1px solid #757575;
+    border-right: 1px solid #757575;
+    border-left: 1px solid #757575;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+}
+
+/* Styles for contact items */
+#contactItemsContainer .floating-label-container input:focus+label,
+#contactItemsContainer .floating-label-container input:not(:placeholder-shown)+label,
+#contactItemsContainer .floating-label-container textarea:focus+label,
+#contactItemsContainer .floating-label-container textarea:not(:placeholder-shown)+label,
+#contactItemsContainer .floating-label-container select:focus+label,
+#contactItemsContainer .floating-label-container select:not(:placeholder-shown)+label {
+    top: -15px;
+    left: 45px;
+}
+
+/* Styles for contact item links */
+#contactItemsContainer .floating-label-link input:focus+label,
+#contactItemsContainer .floating-label-link input:not(:placeholder-shown)+label,
+#contactItemsContainer .floating-label-link textarea:focus+label,
+#contactItemsContainer .floating-label-link textarea:not(:placeholder-shown)+label,
+#contactItemsContainer .floating-label-link select:focus+label,
+#contactItemsContainer .floating-label-link select:not(:placeholder-shown)+label {
+    top: 37px;
+    left: 10px;
+    border-top: 0;
+    border-right: 1px solid #757575;
+    border-left: 1px solid #757575;
+    border-bottom: 1px solid #757575;
+    border-top-right-radius: 0;
+    border-top-left-radius: 0;
+    border-bottom-right-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+/* Optional: Add a subtle bottom line animation */
+.floating-label-container::after {
+    content: "";
+    position: absolute;
+    left: 12px;
+    bottom: 0;
+    height: 2px;
+    width: 0%;
+    background-color: #3f51b5;
+    transition: width 0.3s ease-out;
+}
+
+.floating-label-container input:focus~::after,
+.floating-label-container textarea:focus~::after,
+.floating-label-container select:focus~::after {
+    width: 100%;
+}
+
+/* Contact Item Styles for Floating Labels */
+.contact-item .form-group {
+    display: block;
+    /* Changed to block */
+    align-items: center;
+}
+
+.contact-item .form-check {
+    display: flex;
+    align-items: center;
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+.contact-item .form-check-input {
+    margin-right: 8px;
+    width: 16px;
+    height: 16px;
+}
+
+.contact-item .floating-label-container {
+    flex: 1;
+    margin-bottom: 5px;
+    /* Added margin for spacing */
+}
+
+.contact-item .form-check-label {
+    font-size: 16px;
+    color: #757575;
+    cursor: pointer;
+}
+
+/* Classes to override Quill's default alignment */
+.ql-align-right {
+    text-align: right !important;
+}
+
+.ql-align-center {
+    text-align: center !important;
+}
+
+.ql-align-justify {
+    text-align: justify !important;
+}
+
+/* Class to override Quill's default direction */
+.ql-direction-rtl {
+    direction: rtl !important;
+}
+
+/* New style for the edit button */
+.edit-font-btn {
+    font-size: 0.8em;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+/* Custom fonts included in CSS for Quill */
+
+/* Default font family for Quill editor */
+.ql-font-arial {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.ql-font-calibri {
+    font-family: Calibri, sans-serif;
+}
+
+.ql-font-georgia {
+    font-family: Georgia, serif;
+}
+
+.ql-font-tahoma {
+    font-family: Tahoma, Geneva, sans-serif;
+}
+
+.ql-font-times-new-roman {
+    font-family: "Times New Roman", Times, serif;
+}
+
+.ql-font-verdana {
+    font-family: Verdana, Geneva, sans-serif;
+}
+
+/* Additional fonts */
+.ql-font-roboto {
+    font-family: "Roboto", sans-serif;
+}
+
+.ql-font-montserrat {
+    font-family: "Montserrat", sans-serif;
+}
+
+.ql-font-open-sans {
+    font-family: "Open Sans", sans-serif;
+}
+
+.ql-font-raleway {
+    font-family: "Raleway", sans-serif;
+}
+
+.ql-font-lato {
+    font-family: "Lato", sans-serif;
+}
+
+/* Add this new style for the input group */
+.input-group-with-btn {
+    display: flex;
+    align-items: center;
+    /* Vertically align items */
+}
+
+/* Allow the input container in the input group to grow */
+.input-group-with-btn .floating-label-container {
+    flex-grow: 1;
+}
+
+/* Adjust spacing for the edit button in the input group */
+.input-group-with-btn .edit-font-btn {
+    margin-left: 5px;
+}
+
+/* Section Colors in Control Panel */
+/* Background color for the Contact section in the control panel */
+#collapseContact .accordion-body {
+    background-color: #e9ecef;
+    /* Light Gray */
+}
+
+/* Background color for the Photo section in the control panel */
+#collapsePhoto .accordion-body {
+    background-color: #f8f9fa;
+    /* Lighter Gray */
+}
+
+/* Background color for the Summary section in the control panel */
+#collapseSummary .accordion-body {
+    background-color: #d1ecf1;
+    /* Light Blue */
+}
+
+/* Background color for the Education section in the control panel */
+#collapseEducation .accordion-body {
+    background-color: #e2f0cb;
+    /* Light Green */
+}
+
+/* Background color for the Experience section in the control panel */
+#collapseExperience .accordion-body {
+    background-color: #ffeeba;
+    /* Light Yellow */
+}
+
+/* Background color for the Skills section in the control panel */
+#collapseSkills .accordion-body {
+    background-color: #f5c6cb;
+    /* Light Red */
+}
+
+/* Background color for the Projects section in the control panel */
+#collapseProjects .accordion-body {
+    background-color: #cfe2ff;
+    /* Light Purple */
+}
+
+/* Background color for the New Section section in the control panel */
+#collapseNewSection .accordion-body {
+    background-color: #f0f8ff;
+    /* Very Light Blue */
+}
+
+/* Background color for Quill editor container and toolbar */
+.ql-container,
+.ql-toolbar {
+    background-color: #fff;
+}
+
+/* Padding for accordion body */
+.accordion-body {
+    padding-top: 25px;
+}
+
+/* Line height for form controls */
+.form-control {
+    line-height: 1;
+}
+
+/* Quill Size Mappings */
+.ql-size-small {
+    font-size: 0.75em;
+}
+
+.ql-size-large {
+    font-size: 1.5em;
+}
+
+.ql-size-huge {
+    font-size: 2em;
+}
+
+/* Dates alignment for ATS */
+.dates {
+    text-align: right;
+    white-space: nowrap;
+}
+
+.live-preview-header {
+    margin-top: 5px;
+    margin-right: 17px;
+    margin-left: 11px;
+    margin-bottom: 0 !important;
+}
+
+.live-preview-header h6 {
+    border-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.live-resume-preview {
+    border-color: #0dcaf0;
+}
+
+#exportBtn {
+    border-bottom: 0;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+#previewEducation ul li {
+    font-size: 1rem;
+}
+
+/* Additional styles for Skills display options */
+#previewSkills ul {
+    /* For list style */
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+#previewSkills ul li {
+    font-weight: bold;
+}
+
+#previewSkills table {
+    /* For table style */
+    border-collapse: collapse;
+    /* Optional: To remove cell spacing */
+    width: 100%;
+    /* Optional: To make the table full width */
+}
+
+#previewSkills td {
+    padding: 5px;
+    /* Optional: Add padding to table cells */
+}
+
+.resume_builder_header_title {
+    font-size: large;
+    font-weight: bold;
+}
