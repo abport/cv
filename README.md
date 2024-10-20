@@ -42,23 +42,6 @@ If you prefer to run the builder on your own machine:
 * **Quill.js**
 * **Sortable.js**
 
-## 🤝 Contributing
-
-I'd love to see this project grow! Here are some ways you can contribute:
-
-* **New Templates:** Design and contribute additional resume templates.
-* **Features:**  Suggest or implement new features (e.g., saving progress, loading templates). 
-* **Improvements:**  Help refine the existing code or suggest better UI/UX.
-* **Bug Fixes:**  Report or fix any issues you encounter.
-
-To contribute:
-
-1. Fork the repository.
-2. Create a new branch: `git checkout -b feature/your-feature-name`
-3. Commit your changes: `git commit -m 'Add some feature'`
-4. Push to your branch: `git push origin feature/your-feature-name`
-5. Submit a pull request.
-
 ## ⚡️ AI Integration (Extra Credit)
 
 For those looking to take their resumes to the next level, consider integrating AI tools:
