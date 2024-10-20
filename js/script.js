@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
         src: "",
     };
 
-    // HTML Sanitization Function (Corrected)
+    // HTML Sanitization Function 
     function sanitizeQuillHTML(html) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
@@ -304,7 +304,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             }
         });
-
     // Handle Contact Info Display
     document
         .getElementById("contactInfoDisplay")
@@ -315,7 +314,6 @@ document.addEventListener("DOMContentLoaded", function () {
             contactInfo.classList.add(displayStyle);
             updateContactInfoPreview({ target: contactInfo });
         });
-
     // Handle Photo Upload
     document
         .getElementById("photoUpload")
@@ -397,6 +395,9 @@ document.addEventListener("DOMContentLoaded", function () {
         .getElementById("contactAlignment")
         .dispatchEvent(new Event("change"));
 
+    // --- Summary Section ---
+
+    // Summary Quill text-change event
     summaryEditor.on("text-change", function () {
         let fontSizeClass = summaryEditor.getFormat().size;
         let previewSummary = document.getElementById("previewSummary");
@@ -404,10 +405,11 @@ document.addEventListener("DOMContentLoaded", function () {
         if (fontSizeClass) {
             previewSummary.classList.add(fontSizeClass);
         }
-        // Sanitize BEFORE updating previewSummary:
         previewSummary.innerHTML = sanitizeQuillHTML(summaryEditor.root.innerHTML);
+        applyLineHeightToSection("section-summary", sectionLineHeights.summary);
     });
 
+    // Summary Title Input
     document
         .getElementById("summaryTitle")
         .addEventListener("input", function () {
@@ -415,8 +417,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 this.value || "Summary";
         });
 
+    // --- Education Section ---
+
     let educationCounter = 1;
 
+
+    // Add Education Button
     document
         .getElementById("addEducation")
         .addEventListener("click", function () {
@@ -425,10 +431,9 @@ document.addEventListener("DOMContentLoaded", function () {
             var uniqueId = educationCounter++;
             newItem.classList.add("mb-3", "education-item", "role", "group");
             newItem.innerHTML = `<div class="floating-label-container">
-                <input type="text" class="form-control degree" id="degree-${uniqueId}"
+<input type="text" class="form-control degree" id="degree-${uniqueId}"
 placeholder="Degree" required>
 <label class="form-label">Degree</label>
-
 </div>
 <div class="floating-label-container">
 <input type="text" class="form-control institution" id="institution-${uniqueId}"
@@ -440,6 +445,24 @@ placeholder="Institution Name" required>
 required>
 <label class="form-label">Year (2015 - 2019)</label>
 </div>
+<!-- Radio buttons for Education Display Style -->
+<div class="mb-3">
+<label class="form-label">Education Display Style</label>
+<div class="form-check">
+<input class="form-check-input" type="radio" name="educationDisplay-${uniqueId}" 
+id="educationStacked-${uniqueId}" value="stacked" checked>
+<label class="form-check-label" for="educationStacked-${uniqueId}">
+Stacked
+</label>
+</div>
+<div class="form-check">
+<input class="form-check-input" type="radio" name="educationDisplay-${uniqueId}" 
+id="educationInline-${uniqueId}" value="inline">
+<label class="form-check-label" for="educationInline-${uniqueId}">
+Inline
+</label>
+</div>
+</div>
 <button class="btn btn-danger btn-sm mt-2 remove-education">
 Remove
 </button>
@@ -448,7 +471,11 @@ Remove
             addEditButton(`degree-${uniqueId}`);
             addEditButton(`institution-${uniqueId}`);
             addEditButton(`year-${uniqueId}`);
+            //updateEducationPreview(); 
         });
+
+
+    // Remove Education Button
     document
         .getElementById("educationList")
         .addEventListener("click", function (e) {
@@ -463,12 +490,36 @@ Remove
         var educationItems = document.querySelectorAll(".education-item");
         var preview = document.getElementById("previewEducation");
         preview.innerHTML = "";
-        var isInline = document.getElementById("educationInline").checked;
 
-        educationItems.forEach(function (item) {
+        educationItems.forEach(function (item, index) { // Include index in the loop
             var degree = item.querySelector(".degree").value.trim();
             var institution = item.querySelector(".institution").value.trim();
             var year = item.querySelector(".year").value.trim();
+
+            // --- Update radio button names and IDs to match the new index ---
+
+            var stackedRadio = item.querySelector(`input[name^="educationDisplay-"]`);
+            var inlineRadio = item.querySelector(`input[value="inline"]`);
+
+            if (stackedRadio && inlineRadio) {
+                stackedRadio.name = `educationDisplay-${index}`;
+                stackedRadio.id = `educationStacked-${index}`;
+                stackedRadio.nextElementSibling.setAttribute('for', `educationStacked-${index}`); // Update label's for attribute
+
+                inlineRadio.name = `educationDisplay-${index}`;
+                inlineRadio.id = `educationInline-${index}`;
+                inlineRadio.nextElementSibling.setAttribute('for', `educationInline-${index}`); // Update label's for attribute
+            }
+
+            // Get the checked radio button (if any) using the updated name
+            var checkedRadioButton = item.querySelector(`input[name="educationDisplay-${index}"]:checked`);
+            var isInline = checkedRadioButton ? checkedRadioButton.value === 'inline' : false;
+
+            // Get the checked radio button (if any), handle both name formats
+            // var checkedRadioButton = item.querySelector(`input[name^="educationDisplay-${index}"]:checked`) || 
+            //                         item.querySelector(`input[name="educationDisplay"]:checked`);
+
+            // var isInline = checkedRadioButton ? checkedRadioButton.value === 'inline' : false; 
 
             if (degree !== "" || institution !== "") {
                 var li = document.createElement("li");
@@ -492,13 +543,28 @@ Remove
                 preview.appendChild(li);
             }
         });
+        applyLineHeightToSection("section-education", sectionLineHeights.education);
     }
 
+    // Education Input Change Listener
     document
         .getElementById("educationList")
         .addEventListener("input", updateEducationPreview);
-    updateEducationPreview();
 
+    // Add event listener to educationList to reset counter if empty
+    document.getElementById("educationList").addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove-education")) {
+            e.target.parentElement.remove();
+            updateEducationPreview();
+
+            // Reset educationCounter if the list is empty
+            if (document.querySelectorAll(".education-item").length === 0) {
+                educationCounter = 0;
+            }
+        }
+    });
+
+    // Education Title Input 
     document
         .getElementById("educationTitle")
         .addEventListener("input", function () {
@@ -506,8 +572,11 @@ Remove
                 this.value || "Education";
         });
 
+    // --- Experience Section ---
+
     let experienceCounter = 1;
 
+    // Add Experience Button
     document
         .getElementById("addExperience")
         .addEventListener("click", function () {
@@ -516,7 +585,7 @@ Remove
             var uniqueId = experienceCounter++;
             newItem.classList.add("mb-3", "experience-item", "role", "group");
             newItem.innerHTML = `<div class="floating-label-container">
-                <input type="text" class="form-control job-title" id="job-title-${uniqueId}"
+<input type="text" class="form-control job-title" id="job-title-${uniqueId}"
 placeholder="Job Title" required>
 <label class="form-label">Job Title</label>
 
@@ -619,20 +688,25 @@ placeholder="Job responsibilities and achievements..."></textarea>
             addEditButton(`job-title-${uniqueId}`);
             addEditButton(`company-${uniqueId}`);
             addEditButton(`duration-${uniqueId}`);
+
+            updateExperiencePreview(); // Update preview after adding item
         });
 
-    document
-        .getElementById("experienceList")
-        .addEventListener("click", function (e) {
-            if (e.target.classList.contains("remove-experience")) {
-                let editorIndex = Array.from(
-                    document.querySelectorAll(".experience-item")
-                ).indexOf(e.target.parentElement);
-                experienceEditors.splice(editorIndex, 1);
-                e.target.parentElement.remove();
-                updateExperiencePreview();
+    // Remove Experience Button
+    // Add event listener to experienceList to reset counter if empty
+    document.getElementById("experienceList").addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove-experience")) {
+            let editorIndex = Array.from(document.querySelectorAll(".experience-item")).indexOf(e.target.parentElement);
+            experienceEditors.splice(editorIndex, 1);
+            e.target.parentElement.remove();
+            updateExperiencePreview();
+
+            // Reset experienceCounter if the list is empty
+            if (document.querySelectorAll(".experience-item").length === 0) {
+                experienceCounter = 0;
             }
-        });
+        }
+    });
 
     // Update Experience Preview
     function updateExperiencePreview() {
@@ -645,6 +719,23 @@ placeholder="Job responsibilities and achievements..."></textarea>
             var company = exp.querySelector(".company").value.trim();
             var duration = exp.querySelector(".duration").value.trim();
             var description = experienceEditors[index].root.innerHTML;
+
+            // --- Update radio button names and IDs to match the new index ---
+            var inlineRadio = exp.querySelector(`input[value="inline"]`);
+            var stackedRadio = exp.querySelector(`input[value="stacked"]`);
+
+            if (inlineRadio && stackedRadio) {
+                inlineRadio.name = `experienceDisplay-${index}`;
+                inlineRadio.id = `experienceInline-${index}`;
+                inlineRadio.nextElementSibling.setAttribute('for', `experienceInline-${index}`);
+
+                stackedRadio.name = `experienceDisplay-${index}`;
+                stackedRadio.id = `experienceStacked-${index}`;
+                stackedRadio.nextElementSibling.setAttribute('for', `experienceStacked-${index}`);
+            }
+            // --- End of radio button update ---
+
+            // Get the display style for THIS experience item using updated name
             var displayStyle = exp.querySelector(`input[name^="experienceDisplay-${index}"]:checked`).value;
 
             if (title !== "" || company !== "") {
@@ -691,17 +782,23 @@ placeholder="Job responsibilities and achievements..."></textarea>
                 preview.appendChild(article);
             }
         });
+        applyLineHeightToSection("section-experience", sectionLineHeights.experience);
     }
+
+    // Experience Input Change Listener
     document
         .getElementById("experienceList")
         .addEventListener("input", updateExperiencePreview);
 
+    // Experience Title Input
     document
         .getElementById("experienceTitle")
         .addEventListener("input", function () {
             document.getElementById("experienceSectionTitle").textContent =
                 this.value || "Experience";
         });
+
+    // --- Skills Section ---
 
     // Add Skills Functionality
     var skillsInput = document.getElementById("skillsInput");
@@ -803,15 +900,15 @@ placeholder="Job responsibilities and achievements..."></textarea>
             });
 
             preview.appendChild(table);
-        }
+        } applyLineHeightToSection("section-skills", sectionLineHeights.skills);
     }
 
+    // Skills Display Style Change Listener
     document.querySelectorAll('input[name="skillsDisplay"]').forEach(function (radio) {
         radio.addEventListener("change", updateSkillsPreview);
     });
 
-    updateSkillsPreview();
-
+    // Skills Title Input 
     document
         .getElementById("skillsTitle")
         .addEventListener("input", function () {
@@ -823,8 +920,11 @@ placeholder="Job responsibilities and achievements..."></textarea>
     document.getElementById("tableColumnCount").addEventListener("input", updateSkillsPreview);
     document.getElementById("tableCellSpacing").addEventListener("input", updateSkillsPreview);
 
+    // --- Projects Section ---
+
     let projectCounter = 1;
 
+    // Add Project Button
     document
         .getElementById("addProject")
         .addEventListener("click", function () {
@@ -833,7 +933,7 @@ placeholder="Job responsibilities and achievements..."></textarea>
             var uniqueId = projectCounter++;
             newItem.classList.add("mb-3", "project-item", "role", "group");
             newItem.innerHTML = `<div class="floating-label-container">
-                <input type="text" class="form-control project-name" id="project-name-${uniqueId}"
+<input type="text" class="form-control project-name" id="project-name-${uniqueId}"
 placeholder="Project XYZ" required>
 <label class="form-label">Project Name</label>
 
@@ -907,6 +1007,7 @@ placeholder="Brief description..."></textarea>
             });
             addEditButton(`project-name-${uniqueId}`);
         });
+    // Remove Project Button
     document
         .getElementById("projectsList")
         .addEventListener("click", function (e) {
@@ -920,11 +1021,11 @@ placeholder="Brief description..."></textarea>
             }
         });
 
+    // Update Projects Preview
     function updateProjectsPreview() {
         var projects = document.querySelectorAll(".project-item");
         var preview = document.getElementById("previewProjects");
         preview.innerHTML = "";
-
         projects.forEach(function (proj, index) {
             var name = proj.querySelector(".project-name").value.trim();
             var desc = projectEditors[index].root.innerHTML;
@@ -938,18 +1039,111 @@ placeholder="Brief description..."></textarea>
                 preview.appendChild(div);
             }
         });
+        applyLineHeightToSection("section-projects", sectionLineHeights.projects);
     }
+    // Project Input Change Listener
     document
         .getElementById("projectsList")
         .addEventListener("input", updateProjectsPreview);
-    updateProjectsPreview();
+
+    // Projects Title Input
     document
         .getElementById("projectsTitle")
         .addEventListener("input", function () {
             document.getElementById("projectsSectionTitle").textContent =
                 this.value || "Projects";
         });
-    // Toggle Sections
+
+    // --- Line Height Functionality ---
+
+    // Object to store line heights for each section
+    var sectionLineHeights = {
+        summary: 1.6,
+        education: 1.6,
+        experience: 1.6,
+        skills: 1.6,
+        projects: 1.6,
+        contact: 1.6
+    };
+
+    // Function to apply line height to all elements in a section
+    function applyLineHeightToSection(sectionId, lineHeight) {
+        const previewElement = document.querySelector(`#${sectionId}`);
+        if (previewElement) {
+            previewElement.style.lineHeight = lineHeight; // Apply to the container
+            const childElements = previewElement.querySelectorAll('*'); // Select all child elements
+            childElements.forEach(element => {
+                element.style.lineHeight = lineHeight; // Apply line height to children
+            });
+        }
+    }
+
+    // Summary Line Height Slider
+    var summaryLineHeightSlider = document.getElementById("summaryLineHeight");
+    var summaryLineHeightValue = document.getElementById("summaryLineHeightValue");
+    summaryLineHeightSlider.addEventListener("input", function () {
+        summaryLineHeightValue.textContent = this.value;
+        sectionLineHeights.summary = this.value;
+        applyLineHeightToSection("section-summary", this.value);
+    });
+
+    // Education Line Height Slider
+    var educationLineHeightSlider = document.getElementById("educationLineHeight");
+    var educationLineHeightValue = document.getElementById("educationLineHeightValue");
+    educationLineHeightSlider.addEventListener("input", function () {
+        educationLineHeightValue.textContent = this.value;
+        sectionLineHeights.education = this.value;
+        applyLineHeightToSection("section-education", this.value);
+    });
+
+    // Experience Line Height Slider
+    var experienceLineHeightSlider = document.getElementById("experienceLineHeight");
+    var experienceLineHeightValue = document.getElementById("experienceLineHeightValue");
+    experienceLineHeightSlider.addEventListener("input", function () {
+        experienceLineHeightValue.textContent = this.value;
+        sectionLineHeights.experience = this.value;
+        applyLineHeightToSection("section-experience", this.value);
+    });
+
+    // Skills Line Height Slider
+    var skillsLineHeightSlider = document.getElementById("skillsLineHeight");
+    var skillsLineHeightValue = document.getElementById("skillsLineHeightValue");
+    skillsLineHeightSlider.addEventListener("input", function () {
+        skillsLineHeightValue.textContent = this.value;
+        sectionLineHeights.skills = this.value;
+        applyLineHeightToSection("section-skills", this.value);
+    });
+
+    // Projects Line Height Slider
+    var projectsLineHeightSlider = document.getElementById("projectsLineHeight");
+    var projectsLineHeightValue = document.getElementById("projectsLineHeightValue");
+    projectsLineHeightSlider.addEventListener("input", function () {
+        projectsLineHeightValue.textContent = this.value;
+        sectionLineHeights.projects = this.value;
+        applyLineHeightToSection("section-projects", this.value);
+    });
+
+    // Contact Line Height Slider
+    var contactLineHeightSlider = document.getElementById("contactLineHeight");
+    var contactLineHeightValue = document.getElementById("contactLineHeightValue");
+    contactLineHeightSlider.addEventListener("input", function () {
+        contactLineHeightValue.textContent = this.value;
+        sectionLineHeights.contact = this.value;
+        applyLineHeightToSection("section-photo", this.value); // Assuming section-photo contains contact info
+    });
+
+    // --- Section Spacing Functionality ---
+    var sectionSpacingInput = document.getElementById("sectionSpacing");
+
+    sectionSpacingInput.addEventListener("input", function () {
+        var spacing = this.value + "px";
+        var sections = document.querySelectorAll(".resume-section");
+        sections.forEach(function (section) {
+            section.style.marginBottom = spacing;
+        });
+    });
+
+    // --- Toggle Sections ---
     var toggles = document.querySelectorAll(".toggle-section");
     toggles.forEach(function (toggle) {
         toggle.addEventListener("change", function () {
@@ -983,22 +1177,17 @@ placeholder="Brief description..."></textarea>
         });
     });
 
-    // Object to store font styles 
-    var elementStyles = {};
-    var fontModal = new bootstrap.Modal(
-        document.getElementById("fontModal")
-    );
+    // --- Font Styling Functionality ---
 
+    // Object to store font styles
+    var elementStyles = {};
+    var fontModal = new bootstrap.Modal(document.getElementById("fontModal"));
     var modalFontFamily = document.getElementById("modalFontFamily");
     var modalCustomFontInput = document.getElementById("modalCustomFont");
     var modalFontSize = document.getElementById("modalFontSize");
     var modalFontColor = document.getElementById("modalFontColor");
-    var modalTitleBorderColorContainer = document.getElementById(
-        "modalTitleBorderColorContainer"
-    );
-    var modalTitleBorderColor = document.getElementById(
-        "modalTitleBorderColor"
-    );
+    var modalTitleBorderColorContainer = document.getElementById("modalTitleBorderColorContainer");
+    var modalTitleBorderColor = document.getElementById("modalTitleBorderColor");
     var currentTargetElement = null;
 
     function addEditButton(inputId, isContactItem = false) {
@@ -1080,6 +1269,7 @@ placeholder="Brief description..."></textarea>
 
         return null;
     }
+
     function openFontModal(targetElement, isContactItem = false) {
         currentTargetElement = targetElement;
         var previewElement = getPreviewElementForInput(targetElement);
@@ -1118,6 +1308,7 @@ placeholder="Brief description..."></textarea>
         }
         fontModal.show();
     }
+
     function getPreviewElementForInput(inputElement) {
         var elementId = inputElement.id;
 
@@ -1297,19 +1488,17 @@ placeholder="Brief description..."></textarea>
 
     addEditButton("project-name-0");
 
-    // Add New Section Functionality
+    // --- Add New Section Functionality ---
+
     document
         .getElementById("addNewSectionBtn")
         .addEventListener("click", function () {
             var title = document.getElementById("newSectionTitle").value.trim();
             var content = newSectionEditors[0].getContents();
-            var lineHeight = document.getElementById(
-                "newSectionLineHeight"
-            ).value;
+            var newSectionLineHeight = document.getElementById("newSectionLineHeight").value;
 
             if (title !== "") {
-                var newSectionId =
-                    "section-" + title.toLowerCase().replace(/[^a-z0-9]/g, "-");
+                var newSectionId = "section-" + title.toLowerCase().replace(/[^a-z0-9]/g, "-");
                 var newSectionTitleId = title.toLowerCase().replace(/[^a-z0-9]/g, "-") + "SectionTitle";
                 var newToolbarId = `${newSectionId}-toolbar`;
 
@@ -1317,22 +1506,21 @@ placeholder="Brief description..."></textarea>
                 newSection.classList.add("resume-section", "section");
                 newSection.id = newSectionId;
                 newSection.innerHTML = `<h2 id="${newSectionTitleId}" class="new-section-title">${title}</h2>
-    <div class="preview-new-section" style="line-height: ${lineHeight};"></div>
-    <div class="${newSectionId}-editor"></div> <div class="new-section-toolbar" id="${newSectionId}-toolbar"></div>`;
-
+<div class="preview-new-section"></div>`;
                 document.getElementById("resumePreview").appendChild(newSection);
-
                 addNewSectionToControlPanel(
                     title,
                     newSectionId,
                     newSectionTitleId,
                     content,
-                    lineHeight
+                    newSectionLineHeight
                 );
                 document.getElementById("newSectionTitle").value = "";
                 newSectionEditors[0].setText("");
 
                 Sortable.get(document.getElementById('resumePreview')).option('draggable', '.section, .resume-header, #' + newSectionId);
+
+                applyLineHeightToSection(newSectionId, newSectionLineHeight); // Apply line height to the new section
             }
         });
 
@@ -1341,7 +1529,7 @@ placeholder="Brief description..."></textarea>
         newSectionId,
         newSectionTitleId,
         content,
-        lineHeight
+        newSectionLineHeight
     ) {
         var accordion = document.getElementById("resumeAccordion");
         var newToolbarId = `${newSectionId}-toolbar`;
@@ -1421,8 +1609,7 @@ placeholder="Brief description..."></textarea>
 </div>
 <div class="mb-3">
 <label for="${newSectionId}LineHeight" class="form-label">Line Height</label>
-<input type="range" class="form-range" min="1" max="3" step="0.1" id="${newSectionId}LineHeight" value="${lineHeight}">
-<span id="${newSectionId}LineHeightValue">${lineHeight}</span>
+<input type="range" class="form-range" min="1" max="3" step="0.1" id="${newSectionId}LineHeight" value="${newSectionLineHeight}"> <span id="${newSectionId}LineHeightValue">${newSectionLineHeight}</span>
 </div>
 <div class="form-check mb-3">
 <input class="form-check-input toggle-section" type="checkbox" value="${newSectionId.replace(
@@ -1439,7 +1626,6 @@ placeholder="Brief description..."></textarea>
 Include ${title}
 </label>
 </div>
-<div class="preview-new-section" style="line-height: ${lineHeight};"></div>
 </div>
 </div>
 `;
@@ -1448,14 +1634,12 @@ Include ${title}
             newAccordionItem.querySelector(`#${newToolbarId}`)
         );
         if (newEditor) {
-
-            newEditor.on('editor-change', function (delta, oldDelta, source) {
-                document.querySelector(`#${newSectionId} .preview-new-section`).innerHTML = sanitizeQuillHTML(newEditor.root.innerHTML);
+            newEditor.on('text-change', function () {
+                updateNewSectionPreview(newSectionId, newEditor, newSectionLineHeight);
             });
             if (content.ops.length > 0) {
                 newEditor.setContents(content);
             }
-
         }
         newAccordionItem
             .querySelector(`#${newSectionTitleId}Edit`)
@@ -1477,137 +1661,32 @@ Include ${title}
                     section.style.display = "none";
                 }
             });
-        var newSectionLineHeightSlider = newAccordionItem.querySelector(
-            `#${newSectionId}LineHeight`
-        );
-        var newSectionLineHeightValue = newAccordionItem.querySelector(
-            `#${newSectionId}LineHeightValue`
-        );
+        var newSectionLineHeightSlider = newAccordionItem.querySelector(`#${newSectionId}LineHeight`);
+        var newSectionLineHeightValue = newAccordionItem.querySelector(`#${newSectionId}LineHeightValue`);
         newSectionLineHeightSlider.addEventListener("input", function () {
             newSectionLineHeightValue.textContent = this.value;
-            // Apply line height to all elements within the new section
-            var newSectionElements = document.querySelectorAll(`#${newSectionId} *`);
-            newSectionElements.forEach(function (item) {
-                item.style.lineHeight = this.value;
-            }.bind(this));
+            newSectionLineHeight = this.value;
+
+            // Update the preview with the new line height
+            updateNewSectionPreview(newSectionId, newEditor, newSectionLineHeight);
+
             elementStyles[newSectionId + "LineHeight"] = {
                 lineHeight: this.value,
             };
         });
     }
 
-    // Line Height Functionality 
-    var summaryLineHeightSlider =
-        document.getElementById("summaryLineHeight");
-    var summaryLineHeightValue = document.getElementById(
-        "summaryLineHeightValue"
-    );
-    summaryLineHeightSlider.addEventListener("input", function () {
-        summaryLineHeightValue.textContent = this.value;
-        var summaryItems = document.querySelectorAll("#previewSummary *"); // Target all elements in Summary
-        summaryItems.forEach(function (item) {
-            item.style.lineHeight = this.value;
-        }.bind(this));
-        elementStyles["summaryLineHeight"] = {
-            lineHeight: this.value,
-        };
-    });
-    var educationLineHeightSlider = document.getElementById(
-        "educationLineHeight"
-    );
-    var educationLineHeightValue = document.getElementById(
-        "educationLineHeightValue"
-    );
-    educationLineHeightSlider.addEventListener("input", function () {
-        educationLineHeightValue.textContent = this.value;
-        var educationItems = document.querySelectorAll("#previewEducation li");
-        educationItems.forEach(function (item) {
-            item.style.lineHeight = this.value;
-        }.bind(this));
-        elementStyles["educationLineHeight"] = {
-            lineHeight: this.value,
-        };
-    });
-    var experienceLineHeightSlider = document.getElementById(
-        "experienceLineHeight"
-    );
-    var experienceLineHeightValue = document.getElementById(
-        "experienceLineHeightValue"
-    );
-    experienceLineHeightSlider.addEventListener("input", function () {
-        experienceLineHeightValue.textContent = this.value;
+    // New function to update the preview 
+    function updateNewSectionPreview(sectionId, editor, lineHeight) {
+        const previewSection = document.querySelector(`#${sectionId} .preview-new-section`);
+        if (previewSection) {
+            previewSection.innerHTML = sanitizeQuillHTML(editor.root.innerHTML);
+            sectionLineHeights[sectionId.replace("section-", "")] = lineHeight;
+            applyLineHeightToSection(sectionId, lineHeight);
+        }
+    }
 
-        // Apply line height to all elements within previewExperience
-        var experienceElements = document.querySelectorAll("#previewExperience *");
-        experienceElements.forEach(function (item) {
-            item.style.lineHeight = this.value;
-        }.bind(this));
-
-        elementStyles["experienceLineHeight"] = {
-            lineHeight: this.value,
-        };
-    });
-
-    var skillsLineHeightSlider =
-        document.getElementById("skillsLineHeight");
-    var skillsLineHeightValue = document.getElementById(
-        "skillsLineHeightValue"
-    );
-    skillsLineHeightSlider.addEventListener("input", function () {
-        skillsLineHeightValue.textContent = this.value;
-        var skillItems = document.querySelectorAll("#previewSkills li"); // Target list items in Skills
-        skillItems.forEach(function (item) {
-            item.style.lineHeight = this.value;
-        }.bind(this));
-        elementStyles["skillsLineHeight"] = {
-            lineHeight: this.value,
-        };
-    });
-    var projectsLineHeightSlider =
-        document.getElementById("projectsLineHeight");
-    var projectsLineHeightValue = document.getElementById(
-        "projectsLineHeightValue"
-    );
-    projectsLineHeightSlider.addEventListener("input", function () {
-        projectsLineHeightValue.textContent = this.value;
-        var projectItems = document.querySelectorAll("#previewProjects *"); // Target all elements in Projects
-        projectItems.forEach(function (item) {
-            item.style.lineHeight = this.value;
-        }.bind(this));
-        elementStyles["projectsLineHeight"] = {
-            lineHeight: this.value,
-        };
-    });
-
-    // Contact Line Height
-    var contactLineHeightSlider = document.getElementById("contactLineHeight");
-    var contactLineHeightValue = document.getElementById("contactLineHeightValue");
-    contactLineHeightSlider.addEventListener("input", function () {
-        contactLineHeightValue.textContent = this.value;
-
-        // Target paragraph elements within the previewContactInfo div
-        var contactItems = document.querySelectorAll("#previewContactInfo p");
-        contactItems.forEach(function (item) {
-            item.style.lineHeight = this.value;
-        }.bind(this));
-
-        elementStyles["contactLineHeight"] = {
-            lineHeight: this.value,
-        };
-    });
-
-    // Section Spacing Functionality
-    var sectionSpacingInput = document.getElementById("sectionSpacing");
-
-    sectionSpacingInput.addEventListener("input", function () {
-        var spacing = this.value + "px";
-        var sections = document.querySelectorAll(".resume-section");
-        sections.forEach(function (section) {
-            section.style.marginBottom = spacing;
-        });
-    });
-
-    // Export Resume 
+    // --- Export Resume  ---
     document
         .getElementById("exportBtn")
         .addEventListener("click", function () {
@@ -1708,25 +1787,26 @@ text-align: right;
 white-space: nowrap;
 }
 /* Quill Font Mappings */
-.ql-font-arial { font-family: Arial, Helvetica, sans-serif; }
+.ql-font-arial {
+font-family: Arial, Helvetica, sans-serif; }
 .ql-font-calibri { font-family: Calibri, sans-serif; }
 .ql-font-georgia { font-family: Georgia, serif; }
 .ql-font-tahoma { font-family: Tahoma, Geneva, sans-serif; }
 .ql-font-times-new-roman { font-family: 'Times New Roman', Times, serif; }
 .ql-font-verdana { font-family: Verdana, Geneva, sans-serif; }
 
-/* Additional fonts /
+/* Additional fonts */
 .ql-font-roboto { font-family: 'Roboto', sans-serif; }
 .ql-font-montserrat { font-family: 'Montserrat', sans-serif; }
 .ql-font-open-sans { font-family: 'Open Sans', sans-serif; }
 .ql-font-raleway { font-family: 'Raleway', sans-serif; }
 .ql-font-lato { font-family: 'Lato', sans-serif; }
-/ RTL and Alignment Classes */
+/* RTL and Alignment Classes */
 .ql-align-center { text-align: center !important; }
 .ql-align-justify { text-align: justify !important; }
 .ql-align-right { text-align: right !important; }
 .ql-direction-rtl { direction: rtl !important; }
-</style>`; // Your styles
+</style>`; // Your styles 
             var htmlContent = `<!DOCTYPE html>
 
 <html>
@@ -1753,6 +1833,7 @@ ${resumeHTML}
             a.click();
             URL.revokeObjectURL(url);
         });
+
     function applyStoredStyles(element) {
         if (element.nodeType === Node.ELEMENT_NODE) {
             var elementId = element.id;
@@ -1777,6 +1858,7 @@ ${resumeHTML}
             }
         }
     }
+
     function adjustFloatingLabels() {
         const containers = document.querySelectorAll('.floating-label-container');
         containers.forEach(container => {
@@ -1789,6 +1871,7 @@ ${resumeHTML}
             }
         });
     }
+
     adjustFloatingLabels();
     window.addEventListener('resize', adjustFloatingLabels);
 });
