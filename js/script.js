@@ -515,11 +515,6 @@ Remove
             var checkedRadioButton = item.querySelector(`input[name="educationDisplay-${index}"]:checked`);
             var isInline = checkedRadioButton ? checkedRadioButton.value === 'inline' : false;
 
-            // Get the checked radio button (if any), handle both name formats
-            // var checkedRadioButton = item.querySelector(`input[name^="educationDisplay-${index}"]:checked`) || 
-            //                         item.querySelector(`input[name="educationDisplay"]:checked`);
-
-            // var isInline = checkedRadioButton ? checkedRadioButton.value === 'inline' : false; 
 
             if (degree !== "" || institution !== "") {
                 var li = document.createElement("li");
@@ -1488,8 +1483,9 @@ placeholder="Brief description..."></textarea>
 
     addEditButton("project-name-0");
 
-    // --- Add New Section Functionality ---
+    let newSectionCounter = {}; // Counter to keep track of sections with the same title
 
+    // --- Add New Section Functionality ---
     document
         .getElementById("addNewSectionBtn")
         .addEventListener("click", function () {
@@ -1498,8 +1494,16 @@ placeholder="Brief description..."></textarea>
             var newSectionLineHeight = document.getElementById("newSectionLineHeight").value;
 
             if (title !== "") {
-                var newSectionId = "section-" + title.toLowerCase().replace(/[^a-z0-9]/g, "-");
-                var newSectionTitleId = title.toLowerCase().replace(/[^a-z0-9]/g, "-") + "SectionTitle";
+                // --- Create unique ID for the new section ---
+                if (!newSectionCounter[title]) {
+                    newSectionCounter[title] = 0;
+                }
+                newSectionCounter[title]++;
+                var sectionCount = newSectionCounter[title];
+                var newSectionId = `section-${title.toLowerCase().replace(/[^a-z0-9]/g, "-")}-${sectionCount}`;
+                // ---------------------------------------------
+
+                var newSectionTitleId = title.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + sectionCount + "SectionTitle";
                 var newToolbarId = `${newSectionId}-toolbar`;
 
                 var newSection = document.createElement("section");
