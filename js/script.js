@@ -1151,7 +1151,6 @@ placeholder="Brief description..."></textarea>
                     document.getElementById("resumePhotoContainer").style.display =
                         photoDisplay;
                 } else {
-                    section.style.display = "none";
                     document.getElementById("resumePhotoContainer").style.display =
                         "none";
                 }
