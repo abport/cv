@@ -15,7 +15,8 @@
 * **ATS-Friendly Structure:**  Increase your chances of getting noticed by applicant tracking systems.
 * **Rich Text Editing:**  Format your summary, experience, and projects with ease using the Quill.js editor.
 * **Flexible Customization:**  Add custom contact items, tweak fonts and colors, control line height, and more.
-* **Easy Export & PDF Conversion:** Download your resume as an HTML file and use your browser's built-in print-to-PDF function for perfect results. 
+* **Easy Export & PDF Conversion:** Download your resume as an HTML file and use your browser's built-in print-to-PDF function for perfect results.
+* **Resume Import:** Easily import resumes previously generated with this tool to edit and update them without rewriting from scratch.
 
 ## 🚀 Getting Started
 
@@ -31,6 +32,17 @@ If you prefer to run the builder on your own machine:
 
 1. **Clone the repository:** `git clone https://github.com/abport/cv.git`
 2. **Open `index.html` in your browser:**  The app will launch directly.
+
+### 3. Import an Existing Resume
+
+To import a previously generated resume (only resumes created with this tool are supported):
+
+1. **Click on the "Import Resume" button** within the app interface.
+2. **Select your resume file** (HTML file) from your computer.
+3. **Edit your resume** as needed using the built-in editor.
+
+> **Note:** Only resumes that were generated using this Resume Builder can be imported. Attempting to import resumes from other sources may result in incompatibility issues.
+
 
 ## 💻 Technologies Used
 
