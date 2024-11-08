@@ -25,34 +25,40 @@ document.addEventListener("DOMContentLoaded", function () {
         src: "",
     };
 
+
     // HTML Sanitization Function 
     function sanitizeQuillHTML(html) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
 
-        // Find all <li> with data-list="bullet"
-        const bulletLis = doc.querySelectorAll('li[data-list="bullet"]');
+        // Find all ordered lists
+        const orderedLists = doc.querySelectorAll('ol');
 
-        bulletLis.forEach(li => {
-            const parent = li.parentNode;
+        orderedLists.forEach(ol => {
+            // Create a new <ul> for bullet items
+            let ul = document.createElement('ul');
+            let hasBulletItems = false;
 
-            // 1. If parent is an <ol>, move the <li> out to a new <ul> before the <ol>
-            if (parent.tagName.toLowerCase() === 'ol') {
-                const ul = document.createElement('ul');
-                parent.parentNode.insertBefore(ul, parent);
-                ul.appendChild(li);
-            }
-            // 2. If parent is not a <ul>, wrap the <li> in a new <ul>
-            else if (parent.tagName.toLowerCase() !== 'ul') {
-                const ul = document.createElement('ul');
-                parent.replaceChild(ul, li);
-                ul.appendChild(li);
-            }
+            // Iterate through each <li> in the <ol>
+            Array.from(ol.children).forEach(li => {
+                if (li.getAttribute('data-list') === 'bullet') {
+                    // Move bullet-type <li> to <ul> and set flag
+                    li.removeAttribute('data-list');
+                    ul.appendChild(li);
+                    hasBulletItems = true;
+                } else {
+                    // Keep ordered items in <ol>, remove unnecessary data attributes
+                    li.removeAttribute('data-list');
+                }
 
-            li.removeAttribute('data-list');
-            const span = li.querySelector('span.ql-ui');
-            if (span) {
-                span.remove();
+                // Remove <span> with class 'ql-ui' within <li>, if it exists
+                const span = li.querySelector('span.ql-ui');
+                if (span) span.remove();
+            });
+
+            // Insert the new <ul> before the <ol> if it contains bullet items
+            if (hasBulletItems) {
+                ol.parentNode.insertBefore(ul, ol);
             }
         });
 
@@ -314,6 +320,7 @@ document.addEventListener("DOMContentLoaded", function () {
             contactInfo.classList.add(displayStyle);
             updateContactInfoPreview({ target: contactInfo });
         });
+
     // Handle Photo Upload
     document
         .getElementById("photoUpload")
@@ -515,7 +522,6 @@ Remove
             var checkedRadioButton = item.querySelector(`input[name="educationDisplay-${index}"]:checked`);
             var isInline = checkedRadioButton ? checkedRadioButton.value === 'inline' : false;
 
-
             if (degree !== "" || institution !== "") {
                 var li = document.createElement("li");
                 li.style.display = "flex";
@@ -715,6 +721,16 @@ placeholder="Job responsibilities and achievements..."></textarea>
             var duration = exp.querySelector(".duration").value.trim();
             var description = experienceEditors[index].root.innerHTML;
 
+            // 1.  Create the description container :
+            var descriptionContainer = document.createElement("div");
+            descriptionContainer.classList.add("preview-experience-description");
+
+            // 2. Append the Quill editor content to the container:
+            var descriptionHTML = experienceEditors[index].root.innerHTML;
+
+            // 3. Sanitize and insert the content:
+            descriptionContainer.innerHTML = sanitizeQuillHTML(experienceEditors[index].root.innerHTML);
+
             // --- Update radio button names and IDs to match the new index ---
             var inlineRadio = exp.querySelector(`input[value="inline"]`);
             var stackedRadio = exp.querySelector(`input[value="stacked"]`);
@@ -768,13 +784,9 @@ placeholder="Job responsibilities and achievements..."></textarea>
                 titleCompanyDurationDiv.appendChild(durationDiv);
 
                 article.appendChild(titleCompanyDurationDiv);
-                var descriptionEl = document.createElement("p");
-                descriptionEl.classList.add('preview-experience-description')
-                // Sanitize before adding to preview:
-                descriptionEl.innerHTML = sanitizeQuillHTML(description);
-                article.appendChild(descriptionEl);
 
-                preview.appendChild(article);
+                article.appendChild(descriptionContainer); // Append the description container
+                preview.appendChild(article); // Append the article to preview
             }
         });
         applyLineHeightToSection("section-experience", sectionLineHeights.experience);
@@ -1124,7 +1136,7 @@ placeholder="Brief description..."></textarea>
     contactLineHeightSlider.addEventListener("input", function () {
         contactLineHeightValue.textContent = this.value;
         sectionLineHeights.contact = this.value;
-        applyLineHeightToSection("section-photo", this.value); // Assuming section-photo contains contact info
+        applyLineHeightToSection("section-photo", this.value);
     });
 
     // --- Section Spacing Functionality ---
@@ -1482,6 +1494,7 @@ placeholder="Brief description..."></textarea>
 
     addEditButton("project-name-0");
 
+
     let newSectionCounter = {}; // Counter to keep track of sections with the same title
 
     // --- Add New Section Functionality ---
@@ -1809,7 +1822,7 @@ font-family: Arial, Helvetica, sans-serif; }
 .ql-align-justify { text-align: justify !important; }
 .ql-align-right { text-align: right !important; }
 .ql-direction-rtl { direction: rtl !important; }
-</style>`; // Your styles 
+</style>`;
             var htmlContent = `<!DOCTYPE html>
 
 <html>
@@ -1877,4 +1890,366 @@ ${resumeHTML}
 
     adjustFloatingLabels();
     window.addEventListener('resize', adjustFloatingLabels);
+
+    // --- Import Resume Functionality ---
+    document.getElementById("importBtn").addEventListener("click", function () {
+        document.getElementById("importFile").click();
+    });
+
+    document.getElementById("importFile").addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const htmlContent = e.target.result;
+                parseAndLoadHTML(htmlContent); // Call the parsing function
+            };
+            reader.readAsText(file);
+        }
+    });
+
+    function parseAndLoadHTML(htmlContent) {
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlContent, "text/html");
+
+            // --- Photo Import ---
+            const photoElement = doc.querySelector("#resumePhoto");
+            if (photoElement && photoElement.src) {
+                document.getElementById("resumePhoto").src = photoElement.src;
+                document.getElementById("resumePhotoContainer").style.display = "block";
+                photo.src = photoElement.src;  // Set photo.src, so it displays on export
+                document.getElementById('togglePhoto').checked = true; // Ensure photo is included
+                document.querySelector(`#section-photo`).style.display = "flex"; // Ensure photo section is visible
+            }
+
+            // --- Contact Info ---
+            document.getElementById("contactName").value = doc.getElementById("previewName")?.textContent || "";
+            document.getElementById("contactTitle").value = doc.getElementById("previewTitle")?.textContent || "";
+
+
+            // --- Email, Phone, LinkedIn, Website ---
+            const previewContactInfo = doc.getElementById("previewContactInfo");
+
+            // Initialize a counter for "other" contact types
+            let otherContactCounterImported = 0;
+            let importedContactItems = []; // Array to store imported items temporarily
+
+
+            if (previewContactInfo) {
+                const contactItems = previewContactInfo.querySelectorAll("p, a");
+                contactItems.forEach(item => {
+                    let type = item.id?.replace("preview", "") || "";
+                    let value = "";
+                    let link = "";
+
+                    if (item.tagName === 'A') {
+                        value = item.textContent || "";
+                        link = item.href || "";
+                    } else { // It's a <p> tag (no link)
+                        value = item.textContent || "";
+                    }
+
+                    importedContactItems.push({ type, value, link }); // Store items
+
+                });
+            }
+
+
+            // --- NOW process the imported items: ---
+
+            // Iterate over the importedContactItems using a for loop
+            for (let i = 0; i < importedContactItems.length; i++) {
+                let item = importedContactItems[i];
+                let { type, value, link } = item;
+
+                // Initialize a variable to hold the link (if any)
+                let associatedLink = '';
+
+                // Check if the current item has a relevant type
+                if (type === "" || type === "email" || type === "phone" || type === "linkedin" || type === "website") {
+                    // If type is empty, it's likely a link without a main type, skip processing
+                    if (type === "") {
+                        continue;
+                    }
+
+                    // Check if the next item exists and has type ''
+                    if (i + 1 < importedContactItems.length && importedContactItems[i + 1].type === "") {
+                        associatedLink = importedContactItems[i + 1].link;
+                        i++; // Skip the next item as it's already processed
+                    }
+
+                    // Correct the type formatting
+                    const correctedType = type === "linkedin" ? "LinkedIn" : type.charAt(0).toUpperCase() + type.slice(1);
+
+                    // Get the input fields and checkbox based on the corrected type
+                    const inputField = document.getElementById(`contact${correctedType}`);
+                    const linkInputField = document.getElementById(`link${correctedType}`); // Correct ID for link field
+                    const checkbox = document.getElementById(`include${correctedType}`);
+
+                    if (inputField) {
+                        inputField.value = value;
+
+                        if (linkInputField) {
+                            // Assign the associated link if available, otherwise use the current link
+                            linkInputField.value = associatedLink || link;
+                        }
+
+                        if (checkbox) checkbox.checked = true;
+                        inputField.dispatchEvent(new Event('input', { bubbles: true }));
+                    }
+
+                } else { // Handle other contact items (e.g., 'other0', 'other1', etc.)
+                    // Check if the next item exists and has type ''
+                    if (i + 1 < importedContactItems.length && importedContactItems[i + 1].type === "") {
+                        associatedLink = importedContactItems[i + 1].link;
+                        i++; // Skip the next item as it's already processed
+                    }
+
+                    // Assign a unique type for "other" contacts
+                    let uniqueType = "other" + otherContactCounterImported++;
+
+                    // Simulate clicking the "Add Contact Item" button to create a new contact input
+                    document.getElementById("addContactItem").click();
+
+                    // Get the newly added contact item container
+                    const newContactItem = document.getElementById("contactItemsContainer").lastElementChild;
+
+                    // Select the input elements within the new contact item
+                    const newInput = newContactItem.querySelector(".contact-input");
+                    const newLinkInput = newContactItem.querySelector(".contact-link"); // Select the link input
+                    const newCheckbox = newContactItem.querySelector(".include-contact-item");
+
+                    // Set IDs and values for the new input fields
+                    newInput.id = `contact${uniqueType}`;
+                    newInput.value = value;
+
+                    newLinkInput.id = `link${uniqueType}`;  // Set ID for the link input
+                    newLinkInput.value = associatedLink || link; // Apply the extracted link or existing link
+
+                    newCheckbox.id = `include${uniqueType}`;
+                    newCheckbox.value = uniqueType;
+                    newCheckbox.checked = true;
+
+                    // Dispatch an input event to notify any listeners of the change
+                    newInput.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+            }
+
+
+
+            // Trigger input events *AFTER* processing all items
+            document.querySelectorAll('.contact-input, .contact-link').forEach(input => {
+                input.dispatchEvent(new Event('input', { bubbles: true }));
+            });
+
+
+
+
+
+            // --- Summary ---
+            const summaryHTML = doc.getElementById("previewSummary")?.innerHTML || "";
+            summaryEditor.clipboard.dangerouslyPasteHTML(0, summaryHTML);  // Use clipboard for Summary
+            document.getElementById("summaryTitle").value = doc.getElementById("summarySectionTitle")?.textContent || "Summary";
+
+
+            // --- Education ---
+            const educationItems = doc.querySelectorAll("#previewEducation li");
+            // Clear existing education items in the control panel
+            document.getElementById("educationList").innerHTML = "";
+            educationCounter = 0; // Reset the counter
+            if (educationItems) {
+                educationItems.forEach((item, index) => {
+                    // Add new education item to control panel dynamically
+                    document.getElementById("addEducation").click();
+                    const degree = item.querySelector("strong")?.textContent || "";
+                    const institution = item.querySelectorAll("span")[0]?.textContent || "";
+                    const year = item.querySelectorAll("span")[1]?.textContent || "";
+
+                    document.getElementById(`degree-${index}`).value = degree;
+                    document.getElementById(`institution-${index}`).value = institution;
+                    document.getElementById(`year-${index}`).value = year;
+
+                });
+                updateEducationPreview();// Trigger update AFTER adding to control panel
+            }
+            document.getElementById("educationTitle").value = doc.getElementById("educationSectionTitle")?.textContent || "Education";
+            // Trigger the toggle to show education section
+            document.getElementById("toggleEducation").checked = true;
+            document.getElementById("toggleEducation").dispatchEvent(new Event('change'));
+
+            // --- Experience ---
+            const experienceItems = doc.querySelectorAll("#previewExperience article");
+            experienceItems.forEach((item, index) => {
+                // 1. Trigger "Add Experience" and wait for the new item to be added
+                document.getElementById("addExperience").click();
+
+                // 2. Use a setTimeout to ensure the editor is initialized
+                setTimeout(() => {
+                    const currentIndex = experienceCounter - 1;
+                    const currentEditor = experienceEditors[currentIndex];
+
+                    const jobTitle = item.querySelector("strong")?.textContent || "";
+                    const company = item.querySelector("h6 > em, h6 > span:not(.dates)")?.textContent || "";
+                    const duration = item.querySelector(".dates span, .dates em, .dates p span")?.textContent || "";
+                    const descriptionHTML = item.querySelector(".preview-experience-description")?.innerHTML || "";
+
+
+                    document.getElementById(`job-title-${currentIndex}`).value = jobTitle;
+                    document.getElementById(`company-${currentIndex}`).value = company;
+                    document.getElementById(`duration-${currentIndex}`).value = duration;
+
+                    if (currentEditor) {
+                        currentEditor.clipboard.dangerouslyPasteHTML(0, descriptionHTML); // Use clipboard for safer pasting
+                    }
+
+
+                    if (item.querySelector("h6 br")) {
+                        document.getElementById(`experienceStacked-${currentIndex}`).checked = true;
+                    } else {
+                        document.getElementById(`experienceInline-${currentIndex}`).checked = true;
+                    }
+                    updateExperiencePreview();
+                }, 0); // Timeout ensures the editor is ready
+
+
+            });
+
+
+            // --- Skills ---
+            const skillsPreview = doc.getElementById("previewSkills");
+            if (skillsPreview) {
+                const skillsList = document.getElementById("skillsList");
+                skillsList.innerHTML = ""; // Clear existing skills
+                if (skillsPreview.querySelector("ul")) { // It's a list
+                    document.getElementById("skillsList").checked = true; // Select the "List" radio button
+                    const skillItems = skillsPreview.querySelectorAll("li");
+                    skillItems.forEach(item => {
+                        document.getElementById("skillsInput").value = item.textContent;
+                        document.getElementById("addSkill").click();
+                    });
+                } else if (skillsPreview.querySelector("table")) {  // It's a table
+                    document.getElementById("skillsTable").checked = true;// Select the "Table" radio button
+                    const skillItems = skillsPreview.querySelectorAll("td");
+                    skillItems.forEach(item => {
+                        document.getElementById("skillsInput").value = item.textContent;
+                        document.getElementById("addSkill").click();
+                    });
+
+                    // Import table column count if available:
+                    const numColumns = skillsPreview.querySelector("table")?.rows[0]?.cells?.length;
+                    if (numColumns) {
+                        document.getElementById("tableColumnCount").value = numColumns;
+                    }
+
+                }
+
+            }
+
+            document.getElementById("skillsTitle").value = doc.getElementById("skillsSectionTitle")?.textContent || "Skills";
+
+
+
+            // --- Projects ---
+            const projectsList = doc.getElementById("previewProjects");
+            if (projectsList) {
+                const projectItems = projectsList.querySelectorAll("div"); // Select the div containing project info
+                projectItems.forEach((item, index) => {
+                    if (index > 0) {
+                        document.getElementById("addProject").click();
+                    }
+
+                    const projectName = item.querySelector("h6 > strong")?.textContent || "";
+                    const projectDescription = item.querySelector(".preview-project-description")?.innerHTML || "";
+
+                    document.getElementById(`project-name-${index}`).value = projectName;
+                    projectEditors[index].clipboard.dangerouslyPasteHTML(0, projectDescription); // Use clipboard for safer pasting
+
+                });
+            }
+            document.getElementById("projectsTitle").value = doc.getElementById("projectsSectionTitle")?.textContent || "Projects";
+
+
+
+            // --- Custom/New Sections ---
+            const customSections = doc.querySelectorAll('.resume-section:not([data-section])');
+            customSections.forEach((section, customIndex) => {
+                const title = section.querySelector('h2')?.textContent || "";
+                const content = section.querySelector('div')?.innerHTML || "";
+                let lineHeight = "1.6";
+
+                document.getElementById("newSectionTitle").value = title;
+
+                //Add new Section and wait for it to be created:
+                document.getElementById("addNewSectionBtn").click();
+
+                //Use setTimeout to ensure the editor and section are fully initialized
+                setTimeout(() => {
+
+                    const newSectionId = `section-${title.toLowerCase().replace(/[^a-z0-9]/g, "-")}-${newSectionCounter[title]}`;
+                    const newSectionEditorContainer = document.querySelector(`.${newSectionId}-editor`);
+                    const newSectionPreview = document.getElementById(newSectionId).querySelector(".preview-new-section");
+                    var newSectionLineHeight = document.getElementById(`${newSectionId}LineHeight`).value;
+                    var newSectionLineHeightSlider = document.querySelector(`#${newSectionId}LineHeight`);
+                    var newSectionLineHeightValue = document.querySelector(`#${newSectionId}LineHeightValue`);
+
+
+                    if (newSectionEditorContainer) {
+                        // Create a new Quill editor for the custom section to handle formatting
+                        let customEditor = new Quill(newSectionEditorContainer, {
+                            modules: { toolbar: document.getElementById("newSectionToolbar") }, // Use the existing toolbar
+                            theme: 'snow'
+                        });
+                        customEditor.clipboard.dangerouslyPasteHTML(0, content);
+                        updateNewSectionPreview(newSectionId, customEditor, lineHeight);
+                        newSectionLineHeightSlider.addEventListener("input", function () {
+                            newSectionLineHeightValue.textContent = this.value;
+                            newSectionLineHeight = this.value;
+
+                            // Update the preview with the new line height
+                            updateNewSectionPreview(newSectionId, customEditor, newSectionLineHeight);
+
+                            elementStyles[newSectionId + "LineHeight"] = {
+                                lineHeight: this.value,
+                            };
+                        });
+                        customEditor.on('text-change', function () {
+                            updateNewSectionPreview(newSectionId, customEditor, newSectionLineHeight);
+                        });
+                    }
+
+                }, 0);
+
+            });
+
+
+            // Trigger input events for contact items (Important: We do this *after* setting values)
+            document.querySelectorAll('.contact-input, .contact-link').forEach(input => {
+                input.dispatchEvent(new Event('input', { bubbles: true })); // Bubbles: true is crucial
+            });
+
+
+
+            // Call update functions after adding all the sections
+            updateExperiencePreview();
+            updateSkillsPreview();
+            updateProjectsPreview();
+
+            // Trigger input events to update the preview
+            document.getElementById("contactName").dispatchEvent(new Event('input'));
+            document.getElementById("contactTitle").dispatchEvent(new Event('input'));
+            document.getElementById("summaryTitle").dispatchEvent(new Event('input'));
+            document.getElementById("educationTitle").dispatchEvent(new Event('input'));
+            document.getElementById("experienceTitle").dispatchEvent(new Event('input'));
+            document.getElementById("skillsTitle").dispatchEvent(new Event('input'));
+            document.getElementById("projectsTitle").dispatchEvent(new Event('input'));
+
+
+        } catch (error) {
+            console.error("Error parsing HTML:", error);
+            alert("Invalid resume file. Please import a valid HTML resume.");
+        }
+
+    }
+
 });

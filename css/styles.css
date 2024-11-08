@@ -535,7 +535,8 @@
             border-color: #0dcaf0;
         }
 
-        #exportBtn {
+        #exportBtn,
+        #importBtn {
             border-bottom: 0;
             border-bottom-left-radius: 0;
             border-bottom-right-radius: 0;
@@ -572,4 +573,21 @@
         .resume_builder_header_title {
             font-size: large;
             font-weight: bold;
+            line-height: 0.5;
+        }
+
+        footer {
+            padding: 10px 0;
+            font-size: 0.85rem;
+            color: #6c757d;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
         }

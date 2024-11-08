@@ -27,7 +27,11 @@
             <div class="col-md-4">
                 <div class="d-flex justify-content-between align-items-center mb-4 live-preview-header">
                     <h6 class="mb-0 btn btn-secondary btn-sm small">Control Panel</h6>
+                    <!-- Import Button -->
+                    <button class="btn btn-success btn-sm" id="importBtn">Import Resume</button>
+                    <input type="file" id="importFile" accept=".html" style="display: none" />
                 </div>
+
                 <div class="accordion control-panel" id="resumeAccordion">
                     <!-- Contact Information Section -->
                     <div class="accordion-item" role="region" aria-labelledby="headingContact">
@@ -840,6 +844,7 @@
                     </div>
 
                 </div>
+
             </div>
 
             <!-- Live Preview -->
@@ -906,8 +911,8 @@
                     <!-- New Sections will be added here -->
                 </div>
             </div>
-        </div>
 
+        </div>
         <!-- Font Customization Modal -->
         <div class="modal fade" id="fontModal" tabindex="-1" aria-labelledby="fontModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -967,7 +972,16 @@
                 </div>
             </div>
         </div>
+
+
     </div>
+
+    <footer class="text-center mt-5">
+        <p class="small">Created by <a href="https://aminbeheshti.com" target="_blank">Amin Beheshti</a>. If you found
+            this tool helpful, consider supporting it. <a href="https://abport.github.io/donate/"
+                target="_blank">Donate</a></p>
+    </footer>
+
 
     <!-- Structured Data Markup for SEO -->
     <script type="application/ld+json">
