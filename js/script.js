@@ -1673,14 +1673,20 @@ placeholder="Brief description..."></textarea>
             newAccordionItem.querySelector(`#${newToolbarId}`),
         );
 
+        newEditor.on('editor-change', function (eventName, ...args) {
+            if (eventName === 'text-change') {
+                updateNewSectionPreview(newSectionId, newEditor);
+                applyLineHeightToSection(newSectionId, sectionLineHeights[newSectionId]); // Apply immediately
+            }
+        });
+
+
         // If importing, set the content. CRITICAL!
         if (content && content.ops && content.ops.length > 0) {
             newEditor.setContents(content);
 
         }
 
-        //  Add event listener after initializing Quill editor:
-        newEditor.on('text-change', () => updateNewSectionPreview(newSectionId, newEditor, newSectionLineHeight));
 
         // Attach event listeners for the new section's title and toggle
         newAccordionItem.querySelector(`#${newSectionTitleId}Edit`).addEventListener("input", function () {
@@ -1703,15 +1709,14 @@ placeholder="Brief description..."></textarea>
         var newSectionLineHeightValue = newAccordionItem.querySelector(`#${newSectionId}LineHeightValue`);
         newSectionLineHeightSlider.addEventListener("input", function () {
             newSectionLineHeightValue.textContent = this.value;
-            newSectionLineHeight = this.value;
+            sectionLineHeights[newSectionId] = this.value; // Store using sectionId directly
 
-            // Update the preview with the new line height
-            updateNewSectionPreview(newSectionId, newEditor, newSectionLineHeight);
+            // Update the preview and apply the new line height
+            updateNewSectionPreview(newSectionId, newEditor);
+            applyLineHeightToSection(newSectionId, this.value); // Apply immediately
 
-            elementStyles[newSectionId + "LineHeight"] = {
-                lineHeight: this.value,
-            };
         });
+
     }
 
 
@@ -1730,10 +1735,9 @@ placeholder="Brief description..."></textarea>
                 }
             }
 
-            previewSection.style.lineHeight = editor.getFormat().lineHeight || 1.6; // Default lineHeight if not set
-
-
         }
+        // Apply line height AFTER updating content
+        applyLineHeightToSection(sectionId, sectionLineHeights[sectionId]);
     }
 
     // --- Export Resume  ---
@@ -1887,6 +1891,11 @@ ${resumeHTML}
     function applyStoredStyles(element) {
         if (element.nodeType === Node.ELEMENT_NODE) {
             var elementId = element.id;
+
+            // Apply line height if stored for the element
+            if (sectionLineHeights[elementId]) {
+                element.style.lineHeight = sectionLineHeights[elementId];
+            }
             if (elementStyles[elementId]) {
                 var styles = elementStyles[elementId];
                 for (var prop in styles) {
