@@ -1,15 +1,3 @@
-        /* 
-        CSS Styles for the Resume Builder App
-        ---------------------------------------
-        This section contains all the CSS styles used for the application. It includes:
-          - General styles for body, preview section, and control panel.
-          - Styles for sections, draggable elements, and highlighting.
-          - Modern resume styles for the header, contact information, and sections.
-          - Styles for floating labels, contact items, and Quill editor overrides.
-          - Styles for custom font families and sizes.
-          - Styles for the input group with edit buttons.
-          - Section colors for the control panel accordion items.
-        */
 
         body {
             padding: 20px;
@@ -591,3 +579,37 @@
         footer a:hover {
             text-decoration: underline;
         }
+
+        .ql-indent-1 {
+            padding-left: 20px;
+        }
+
+        .ql-indent-2 {
+            padding-left: 40px;
+        }
+
+        .ql-indent-3 {
+            padding-left: 60px;
+        }
+
+        .ql-indent-4 {
+            padding-left: 80px;
+        }
+
+        .ql-indent-5 {
+            padding-left: 90px;
+        }
+
+        .ql-indent-6 {
+            padding-left: 100px;
+        }
+
+        .ql-indent-7 {
+            padding-left: 110px;
+        }
+
+        .ql-indent-8 {
+            padding-left: 120px;
+        }
+
+        /* Adjust as needed */
