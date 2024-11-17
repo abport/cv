@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Array to track the order of contact items in the preview
     const contactOrder = ["email", "phone", "linkedin", "website"];
 
+
     // Counter for unique "Other" contact item values
     let otherContactCounter = 0;
 
@@ -65,10 +66,33 @@ document.addEventListener("DOMContentLoaded", function () {
         return doc.body.innerHTML;
     }
 
+    // Register Font
+    const Font = Quill.import('formats/font');
+    Font.whitelist = [
+        'arial',
+        'calibri',
+        'georgia',
+        'tahoma',
+        'times-new-roman',
+        'verdana',
+        'roboto',
+        'montserrat',
+        'open-sans',
+        'raleway',
+        'lato'
+    ];
+    Quill.register(Font, true);
+
+    // Register Size
+    const Size = Quill.import('formats/size');
+    Size.whitelist = ['small', 'normal', 'large', 'huge'];
+    Quill.register(Size, true);
+
     // Initialize Quill.js editor
     function initializeQuillEditor(
         containerElement,
         toolbarElement,
+        previewElement,
         placeholder = "Enter text here..."
     ) {
         var quill = new Quill(containerElement, {
@@ -79,23 +103,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
         quill.container.addEventListener("paste", function () {
             setTimeout(function () {
-                updatePreviewForQuill(quill);
+                updatePreviewForQuill(quill, previewElement);
             }, 0);
         });
 
         quill.on('text-change', function () {
-            updatePreviewForQuill(quill);
+            updatePreviewForQuill(quill, previewElement);
         });
 
         return quill;
     }
 
-    function updatePreviewForQuill(quill) {
-        var previewElement = getPreviewElementForQuill(quill);
+    function updatePreviewForQuill(quill, previewElement) {
         if (previewElement) {
-            // Sanitize Quill output before updating the preview
             const sanitizedHTML = sanitizeQuillHTML(quill.root.innerHTML);
             previewElement.innerHTML = sanitizedHTML;
+
+            // Apply any font properties directly from Quill's format
+            const fontStyles = quill.getFormat();
+            for (const style in fontStyles) {
+                if (fontStyles[style] && previewElement.style[style] !== undefined) {
+                    previewElement.style[style] = fontStyles[style];
+                }
+            }
+            previewElement.style.lineHeight = quill.getFormat().lineHeight || 1.6; // Default lineHeight if not set
+
+            // Manually apply indentation styles:
+            const listItems = previewElement.querySelectorAll('li');
+            listItems.forEach(li => {
+                const indentLevel = li.className.match(/ql-indent-(\d+)/);
+                if (indentLevel) {
+                    const level = parseInt(indentLevel[1]);
+                    li.style.paddingLeft = (level * 40) + "px !important"; // Force styles
+                }
+            });
         }
     }
 
@@ -122,23 +163,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         return null;
     }
-
-    // Initialize Quill editors
-    const Font = Quill.import("formats/font");
-    Font.whitelist = [
-        "arial",
-        "calibri",
-        "georgia",
-        "tahoma",
-        "times-new-roman",
-        "verdana",
-        "roboto",
-        "montserrat",
-        "open-sans",
-        "raleway",
-        "lato",
-    ];
-    Quill.register(Font, true);
 
     var summaryEditor = initializeQuillEditor(
         document.getElementById("summaryTextEditor"),
@@ -678,6 +702,7 @@ placeholder="Job responsibilities and achievements..."></textarea>
 <button class="btn btn-danger btn-sm mt-2 remove-experience">Remove</button>
 `;
             experienceList.appendChild(newItem);
+
             let newEditor = initializeQuillEditor(
                 newItem.querySelector(`#experience-description-editor-${uniqueId}`),
                 newItem.querySelector('.experience-description-toolbar')
@@ -1038,6 +1063,7 @@ placeholder="Brief description..."></textarea>
             var desc = projectEditors[index].root.innerHTML;
             if (name !== "") {
                 var div = document.createElement("div");
+                div.className = 'itemProj';
                 div.innerHTML = `<h6><strong>${name}</strong></h6>
 <div class="preview-project-description">${desc}</div>
 `;
@@ -1555,128 +1581,124 @@ placeholder="Brief description..."></textarea>
         newAccordionItem.classList.add("accordion-item");
 
         accordion.appendChild(newAccordionItem);
-        newAccordionItem.innerHTML = `<h2 class="accordion-header" id="${newId}">
-<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${newSectionId}" aria-expanded="false" aria-controls="collapse${newSectionId}">
-<i class="bi bi-folder-fill me-2" aria-hidden="true"></i> ${title}
-</button>
+        newAccordionItem.innerHTML = `
+<h2 class="accordion-header" id="${newId}">
+    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${newSectionId}" aria-expanded="false" aria-controls="collapse${newSectionId}">
+        <i class="bi bi-folder-fill me-2" aria-hidden="true"></i> ${title}
+    </button>
 </h2>
 <div id="collapse${newSectionId}" class="accordion-collapse collapse" aria-labelledby="${newId}" data-bs-parent="#resumeAccordion">
-<div class="accordion-body">
-<div class="floating-label-container">
-<input type="text" class="form-control" id="${newSectionTitleId}Edit" placeholder="Section Title" value="${title}" required>
-<label for="${newSectionTitleId}Edit" class="form-label">Section Title</label>
-</div>
-<div class="mb-3">
-<label class="form-label">Content</label>
-<div class="new-section-toolbar" id="${newToolbarId}">
-<select class="ql-font">
-<option value="arial" selected>Arial</option>
-<option value="calibri">Calibri</option>
-<option value="georgia">Georgia</option>
-<option value="tahoma">Tahoma</option>
-<option value="times-new-roman">Times New Roman</option>
-<option value="verdana">Verdana</option>
-<option value="roboto">Roboto</option>
-<option value="montserrat">Montserrat</option>
-<option value="open-sans">Open Sans</option>
-<option value="raleway">Raleway</option>
-<option value="lato">Lato</option>
-</select>
-<select class="ql-size">
-<option value="small"></option>
-<option selected></option>
-<option value="large"></option>
-<option value="huge"></option>
-</select>
-<button class="ql-bold"></button>
-<button class="ql-italic"></button>
-<button class="ql-underline"></button>
-<button class="ql-strike"></button>
-<select class="ql-color"></select>
-<select class="ql-background"></select>
-<select class="ql-align">
-<option selected></option>
-<option value="center"></option>
-<option value="right"></option>
-<option value="justify"></option>
-</select>
-<button class="ql-list" value="ordered"></button>
-<button class="ql-list" value="bullet"></button>
-<button class="ql-indent" value="-1"></button>
-<button class="ql-indent" value="+1"></button>
-<button class="ql-blockquote"></button>
-<button class="ql-code-block"></button>
-<button class="ql-direction" value="rtl"></button>
-<button class="ql-script" value="sub"></button>
-<button class="ql-script" value="super"></button>
-<select class="ql-header">
-<option selected></option>
-<option value="1">Heading 1</option>
-<option value="2">Heading 2</option>
-<option value="3">Heading 3</option>
-</select>
-<button class="ql-link"></button>
-<button class="ql-image"></button>
-<button class="ql-video"></button>
-<button class="ql-formula"></button>
-<button class="ql-clean"></button>
-</div>
-<div class="${newSectionId}-editor"></div>
-</div>
-<div class="mb-3">
-<label for="${newSectionId}LineHeight" class="form-label">Line Height</label>
-<input type="range" class="form-range" min="1" max="3" step="0.1" id="${newSectionId}LineHeight" value="${newSectionLineHeight}"> <span id="${newSectionId}LineHeightValue">${newSectionLineHeight}</span>
-</div>
-<div class="form-check mb-3">
-<input class="form-check-input toggle-section" type="checkbox" value="${newSectionId.replace(
-            "section-",
-            ""
-        )}" id="toggle${newSectionId.replace(
-            "section-",
-            ""
-        )}" checked>
-<label class="form-check-label" for="toggle${newSectionId.replace(
-            "section-",
-            ""
-        )}">
-Include ${title}
-</label>
-</div>
-</div>
+    <div class="accordion-body">
+        <div class="floating-label-container">
+            <input type="text" class="form-control" id="${newSectionTitleId}Edit" placeholder="Section Title" value="${title}" required>
+            <label for="${newSectionTitleId}Edit" class="form-label">Section Title</label>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Content</label>
+            <div class="ql-toolbar ql-new-section-toolbar new-section-toolbar ${newToolbarId}" id="${newToolbarId}">
+                <!-- Toolbar Buttons -->
+                <select class="ql-font">
+                    <option value="arial" selected>Arial</option>
+                    <option value="calibri">Calibri</option>
+                    <option value="georgia">Georgia</option>
+                    <option value="tahoma">Tahoma</option>
+                    <option value="times-new-roman">Times New Roman</option>
+                    <option value="verdana">Verdana</option>
+                    <option value="roboto">Roboto</option>
+                    <option value="montserrat">Montserrat</option>
+                    <option value="open-sans">Open Sans</option>
+                    <option value="raleway">Raleway</option>
+                    <option value="lato">Lato</option>
+                </select>
+                <select class="ql-size">
+                    <option value="small"></option>
+                    <option selected></option>
+                    <option value="large"></option>
+                    <option value="huge"></option>
+                </select>
+                <button class="ql-bold"></button>
+                <button class="ql-italic"></button>
+                <button class="ql-underline"></button>
+                <button class="ql-strike"></button>
+                <select class="ql-color"></select>
+                <select class="ql-background"></select>
+                <select class="ql-align">
+                    <option selected></option>
+                    <option value="center"></option>
+                    <option value="right"></option>
+                    <option value="justify"></option>
+                </select>
+                <button class="ql-list" value="ordered"></button>
+                <button class="ql-list" value="bullet"></button>
+                <button class="ql-indent" value="-1"></button>
+                <button class="ql-indent" value="+1"></button>
+                <button class="ql-blockquote"></button>
+                <button class="ql-code-block"></button>
+                <button class="ql-direction" value="rtl"></button>
+                <button class="ql-script" value="sub"></button>
+                <button class="ql-script" value="super"></button>
+                <select class="ql-header">
+                    <option selected></option>
+                    <option value="1">Heading 1</option>
+                    <option value="2">Heading 2</option>
+                    <option value="3">Heading 3</option>
+                </select>
+                <button class="ql-link"></button>
+                <button class="ql-image"></button>
+                <button class="ql-video"></button>
+                <button class="ql-formula"></button>
+                <button class="ql-clean"></button>
+            </div>
+            <!-- Editor Container with 'ql-container' class -->
+            <div class="ql-container new-section-editor" id="${newSectionId}-editor"></div>
+        </div>
+        <div class="mb-3">
+            <label for="${newSectionId}LineHeight" class="form-label">Line Height</label>
+            <input type="range" class="form-range" min="1" max="3" step="0.1" id="${newSectionId}LineHeight" value="${newSectionLineHeight}">
+            <span id="${newSectionId}LineHeightValue">${newSectionLineHeight}</span>
+        </div>
+        <div class="form-check mb-3">
+            <input class="form-check-input toggle-section" type="checkbox" value="${newSectionId.replace("section-", "")}" id="toggle${newSectionId.replace("section-", "")}" checked>
+            <label class="form-check-label" for="toggle${newSectionId.replace("section-", "")}">
+                Include ${title}
+            </label>
+        </div>
+    </div>
 </div>
 `;
+
+        // Initialize Quill editor for this custom section
         let newEditor = initializeQuillEditor(
-            newAccordionItem.querySelector(`.${newSectionId}-editor`),
-            newAccordionItem.querySelector(`#${newToolbarId}`)
+            newAccordionItem.querySelector(`#${newSectionId}-editor`),
+            newAccordionItem.querySelector(`#${newToolbarId}`),
         );
-        if (newEditor) {
-            newEditor.on('text-change', function () {
-                updateNewSectionPreview(newSectionId, newEditor, newSectionLineHeight);
-            });
-            if (content.ops.length > 0) {
-                newEditor.setContents(content);
-            }
+
+        // If importing, set the content. CRITICAL!
+        if (content && content.ops && content.ops.length > 0) {
+            newEditor.setContents(content);
+
         }
-        newAccordionItem
-            .querySelector(`#${newSectionTitleId}Edit`)
-            .addEventListener("input", function () {
-                document.querySelector(
-                    `#${newSectionId} h2`
-                ).textContent = this.value;
-            });
+
+        //  Add event listener after initializing Quill editor:
+        newEditor.on('text-change', () => updateNewSectionPreview(newSectionId, newEditor, newSectionLineHeight));
+
+        // Attach event listeners for the new section's title and toggle
+        newAccordionItem.querySelector(`#${newSectionTitleId}Edit`).addEventListener("input", function () {
+            document.querySelector(`#${newSectionId} h2`).textContent = this.value;
+        });
 
         addEditButton(`${newSectionTitleId}Edit`);
 
-        newAccordionItem
-            .querySelector(".toggle-section")
-            .addEventListener("change", function () {
-                var section = document.getElementById(newSectionId);
-                if (this.checked) {
-                    section.style.display = "block";
-                } else {
-                    section.style.display = "none";
-                }
-            });
+        newAccordionItem.querySelector(".toggle-section").addEventListener("change", function () {
+            var section = document.getElementById(newSectionId);
+            if (this.checked) {
+                section.style.display = "block";
+            } else {
+                section.style.display = "none";
+            }
+        });
+
+        // Handle Line Height Slider
         var newSectionLineHeightSlider = newAccordionItem.querySelector(`#${newSectionId}LineHeight`);
         var newSectionLineHeightValue = newAccordionItem.querySelector(`#${newSectionId}LineHeightValue`);
         newSectionLineHeightSlider.addEventListener("input", function () {
@@ -1692,13 +1714,25 @@ Include ${title}
         });
     }
 
-    // New function to update the preview 
-    function updateNewSectionPreview(sectionId, editor, lineHeight) {
+
+    // Function to update the preview
+    function updateNewSectionPreview(sectionId, editor) {
         const previewSection = document.querySelector(`#${sectionId} .preview-new-section`);
+
         if (previewSection) {
-            previewSection.innerHTML = sanitizeQuillHTML(editor.root.innerHTML);
-            sectionLineHeights[sectionId.replace("section-", "")] = lineHeight;
-            applyLineHeightToSection(sectionId, lineHeight);
+            const sanitizedHTML = sanitizeQuillHTML(editor.root.innerHTML); // Sanitize
+            previewSection.innerHTML = sanitizedHTML;
+            // Apply styles from Quill format 
+            const fontStyles = editor.getFormat();
+            for (const style in fontStyles) {
+                if (fontStyles[style] && previewSection.style[style] !== undefined) {
+                    previewSection.style[style] = fontStyles[style];
+                }
+            }
+
+            previewSection.style.lineHeight = editor.getFormat().lineHeight || 1.6; // Default lineHeight if not set
+
+
         }
     }
 
@@ -1908,6 +1942,7 @@ ${resumeHTML}
         }
     });
 
+
     function parseAndLoadHTML(htmlContent) {
         try {
             const parser = new DOMParser();
@@ -2044,9 +2079,6 @@ ${resumeHTML}
             });
 
 
-
-
-
             // --- Summary ---
             const summaryHTML = doc.getElementById("previewSummary")?.innerHTML || "";
             summaryEditor.clipboard.dangerouslyPasteHTML(0, summaryHTML);  // Use clipboard for Summary
@@ -2078,42 +2110,55 @@ ${resumeHTML}
             document.getElementById("toggleEducation").checked = true;
             document.getElementById("toggleEducation").dispatchEvent(new Event('change'));
 
+
+
             // --- Experience ---
             const experienceItems = doc.querySelectorAll("#previewExperience article");
-            experienceItems.forEach((item, index) => {
-                // 1. Trigger "Add Experience" and wait for the new item to be added
-                document.getElementById("addExperience").click();
+            document.getElementById("experienceList").innerHTML = ""; // Clear existing experiences
+            experienceCounter = 0; // Reset the counter
+            experienceEditors = []; // Reset the editors array
 
-                // 2. Use a setTimeout to ensure the editor is initialized
-                setTimeout(() => {
-                    const currentIndex = experienceCounter - 1;
-                    const currentEditor = experienceEditors[currentIndex];
+            // Convert NodeList to Array for easier manipulation and async handling
+            const experienceItemsArray = Array.from(experienceItems);
 
-                    const jobTitle = item.querySelector("strong")?.textContent || "";
-                    const company = item.querySelector("h6 > em, h6 > span:not(.dates)")?.textContent || "";
-                    const duration = item.querySelector(".dates span, .dates em, .dates p span")?.textContent || "";
-                    const descriptionHTML = item.querySelector(".preview-experience-description")?.innerHTML || "";
+            // Use Promise.all to handle asynchronous operations correctly
+            Promise.all(experienceItemsArray.map((item, index) => {
+                return new Promise((resolve) => {
+                    setTimeout(() => {
+                        document.getElementById("addExperience").click(); // Add item to control panel
+                        const currentIndex = experienceCounter - 1; // Get correct index
+
+                        const jobTitle = item.querySelector("strong")?.textContent || "";
+                        const company = item.querySelector("h6 > em, h6 > span:not(.dates)")?.textContent || "";
+                        const duration = item.querySelector(".dates span, .dates em, .dates p span")?.textContent || "";
+                        const descriptionHTML = item.querySelector(".preview-experience-description")?.innerHTML || "";
+
+                        document.getElementById(`job-title-${currentIndex}`).value = jobTitle;
+                        document.getElementById(`company-${currentIndex}`).value = company;
+                        document.getElementById(`duration-${currentIndex}`).value = duration;
+
+                        // Wait for the editor to be fully initialized before setting content
+                        const editorContainer = document.getElementById(`experience-description-editor-${currentIndex}`);
+
+                        // Function to check if editor is ready and set its content
+                        function setEditorContentWhenReady(editor, content) {
+                            if (editor) { //Make sure it is there and initiaized before setting content
+                                editor.clipboard.dangerouslyPasteHTML(0, content);
+                                resolve(); // Resolve the promise when the content is set
+                                return;
+                            }
+                            setTimeout(() => setEditorContentWhenReady(experienceEditors[currentIndex], content), 50); // Check again after 50ms
+                        }
+
+                        setEditorContentWhenReady(experienceEditors[currentIndex], descriptionHTML);
 
 
-                    document.getElementById(`job-title-${currentIndex}`).value = jobTitle;
-                    document.getElementById(`company-${currentIndex}`).value = company;
-                    document.getElementById(`duration-${currentIndex}`).value = duration;
-
-                    if (currentEditor) {
-                        currentEditor.clipboard.dangerouslyPasteHTML(0, descriptionHTML); // Use clipboard for safer pasting
-                    }
-
-
-                    if (item.querySelector("h6 br")) {
-                        document.getElementById(`experienceStacked-${currentIndex}`).checked = true;
-                    } else {
-                        document.getElementById(`experienceInline-${currentIndex}`).checked = true;
-                    }
-                    updateExperiencePreview();
-                }, 0); // Timeout ensures the editor is ready
-
-
-            });
+                    }, 0); // 0 delay to ensure DOM updates
+                });
+            }))
+                .then(() => {
+                    updateExperiencePreview(); // Update preview *after* all promises resolve
+                });
 
 
             // --- Skills ---
@@ -2153,19 +2198,33 @@ ${resumeHTML}
             // --- Projects ---
             const projectsList = doc.getElementById("previewProjects");
             if (projectsList) {
-                const projectItems = projectsList.querySelectorAll("div"); // Select the div containing project info
-                projectItems.forEach((item, index) => {
-                    if (index > 0) {
-                        document.getElementById("addProject").click();
-                    }
+                const projectItems = Array.from(projectsList.querySelectorAll(".itemProj"));
+                //Clear existing experiences
+                document.getElementById("projectsList").innerHTML = "";
+                projectCounter = 0; // Reset the counter
+                projectEditors = []; // Reset the editors array
 
-                    const projectName = item.querySelector("h6 > strong")?.textContent || "";
+                //Iterate through the imported project items
+                projectItems.forEach((item, index) => {
+                    document.getElementById("addProject").click(); // Add a new project item
+                    const currentIndex = projectCounter - 1; // Get the correct index
+
+                    const projectName = item.querySelector("h6 strong")?.textContent || "";
                     const projectDescription = item.querySelector(".preview-project-description")?.innerHTML || "";
 
-                    document.getElementById(`project-name-${index}`).value = projectName;
-                    projectEditors[index].clipboard.dangerouslyPasteHTML(0, projectDescription); // Use clipboard for safer pasting
+                    document.getElementById(`project-name-${currentIndex}`).value = projectName;
 
+
+                    const editorContainer = document.getElementById(`project-description-editor-${currentIndex}`);
+                    if (editorContainer) {
+                        const editor = projectEditors[currentIndex]; // Access the existing editor
+                        if (editor) {
+                            editor.clipboard.dangerouslyPasteHTML(0, projectDescription);
+                        }
+                    }
                 });
+
+                updateProjectsPreview(); // Update preview after populating all items
             }
             document.getElementById("projectsTitle").value = doc.getElementById("projectsSectionTitle")?.textContent || "Projects";
 
@@ -2183,11 +2242,13 @@ ${resumeHTML}
                 //Add new Section and wait for it to be created:
                 document.getElementById("addNewSectionBtn").click();
 
+
+
                 //Use setTimeout to ensure the editor and section are fully initialized
                 setTimeout(() => {
 
                     const newSectionId = `section-${title.toLowerCase().replace(/[^a-z0-9]/g, "-")}-${newSectionCounter[title]}`;
-                    const newSectionEditorContainer = document.querySelector(`.${newSectionId}-editor`);
+                    const newSectionEditorContainer = document.getElementById(`${newSectionId}-editor`);
                     const newSectionPreview = document.getElementById(newSectionId).querySelector(".preview-new-section");
                     var newSectionLineHeight = document.getElementById(`${newSectionId}LineHeight`).value;
                     var newSectionLineHeightSlider = document.querySelector(`#${newSectionId}LineHeight`);
@@ -2196,10 +2257,13 @@ ${resumeHTML}
 
                     if (newSectionEditorContainer) {
                         // Create a new Quill editor for the custom section to handle formatting
-                        let customEditor = new Quill(newSectionEditorContainer, {
-                            modules: { toolbar: document.getElementById("newSectionToolbar") }, // Use the existing toolbar
-                            theme: 'snow'
-                        });
+                        // Use the consistent initialization function
+                        let customEditor = initializeQuillEditor(
+                            newSectionEditorContainer,
+                            document.getElementById(`${newSectionId}-toolbar`)
+                        );
+
+
                         customEditor.clipboard.dangerouslyPasteHTML(0, content);
                         updateNewSectionPreview(newSectionId, customEditor, lineHeight);
                         newSectionLineHeightSlider.addEventListener("input", function () {
