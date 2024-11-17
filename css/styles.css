@@ -612,4 +612,42 @@
             padding-left: 120px;
         }
 
-        /* Adjust as needed */
+        /* Blockquote Styling */
+        .live-resume-preview blockquote {
+            margin: 1em 0;
+            /* Add vertical spacing */
+            padding-left: 20px;
+            /* Indentation */
+            border-left: 4px solid #ccc;
+            /* Left border for visual emphasis */
+            color: #555;
+            /* Subtle text color */
+            font-style: italic;
+            /* Italicize the text */
+            background-color: #f9f9f9;
+            /* Light background for emphasis */
+        }
+
+        /* Code Block Styling */
+        .live-resume-preview .ql-code-block {
+            background-color: #f4f4f4;
+            /* Light grey background */
+            border-left: 4px solid #007acc;
+            /* Accent color border */
+            color: #333;
+            /* Darker text color for better readability */
+            font-family: 'Courier New', Courier, monospace;
+            /* Monospace font for code */
+            padding: 10px 15px;
+            /* Padding inside the block */
+            margin: 1em 0;
+            /* Vertical spacing between blocks */
+            white-space: pre;
+            /* Preserve whitespace */
+            overflow-x: auto;
+            /* Allow horizontal scrolling for long lines */
+            font-size: 0.9em;
+            /* Slightly smaller font size for distinction */
+            line-height: 1.5;
+            /* Better line spacing */
+        }
