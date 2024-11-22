@@ -1860,6 +1860,77 @@ font-family: Arial, Helvetica, sans-serif; }
 .ql-align-justify { text-align: justify !important; }
 .ql-align-right { text-align: right !important; }
 .ql-direction-rtl { direction: rtl !important; }
+.ql-indent-1 {
+            padding-left: 20px;
+        }
+
+        .ql-indent-2 {
+            padding-left: 40px;
+        }
+
+        .ql-indent-3 {
+            padding-left: 60px;
+        }
+
+        .ql-indent-4 {
+            padding-left: 80px;
+        }
+
+        .ql-indent-5 {
+            padding-left: 90px;
+        }
+
+        .ql-indent-6 {
+            padding-left: 100px;
+        }
+
+        .ql-indent-7 {
+            padding-left: 110px;
+        }
+
+        .ql-indent-8 {
+            padding-left: 120px;
+        }
+
+        /* Blockquote Styling */
+        .live-resume-preview blockquote {
+            margin: 1em 0;
+            /* Add vertical spacing */
+            padding-left: 20px;
+            /* Indentation */
+            border-left: 4px solid #ccc;
+            /* Left border for visual emphasis */
+            color: #555;
+            /* Subtle text color */
+            font-style: italic;
+            /* Italicize the text */
+            background-color: #f9f9f9;
+            /* Light background for emphasis */
+        }
+
+        /* Code Block Styling */
+        .live-resume-preview .ql-code-block {
+            background-color: #f4f4f4;
+            /* Light grey background */
+            border-left: 4px solid #007acc;
+            /* Accent color border */
+            color: #333;
+            /* Darker text color for better readability */
+            font-family: 'Courier New', Courier, monospace;
+            /* Monospace font for code */
+            padding: 10px 15px;
+            /* Padding inside the block */
+            margin: 1em 0;
+            /* Vertical spacing between blocks */
+            white-space: pre;
+            /* Preserve whitespace */
+            overflow-x: auto;
+            /* Allow horizontal scrolling for long lines */
+            font-size: 0.9em;
+            /* Slightly smaller font size for distinction */
+            line-height: 1.5;
+            /* Better line spacing */
+        }
 </style>`;
             var htmlContent = `<!DOCTYPE html>
 
